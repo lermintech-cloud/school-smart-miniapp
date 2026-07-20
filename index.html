@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Smart Assistant</title>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <link rel="stylesheet" href="style.css">
+<title>School Smart Assistant</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<div class="container">
+<div class="header">
 
     <h1>🏫 School Smart Assistant</h1>
 
+    <div id="datetime"></div>
+
+</div>
+
+<div class="grid">
+
     <div class="card">
-        <h2>🌦️ สภาพอากาศ</h2>
-        <div id="weather">กำลังโหลด...</div>
+
+        <div class="title">🌦️ สภาพอากาศ</div>
+
+        <div id="weather"></div>
+
     </div>
 
     <div class="card">
-        <h2>😷 PM2.5</h2>
-        <div id="pm25">กำลังโหลด...</div>
+
+        <div class="title">😷 PM2.5</div>
+
+        <div id="pm25"></div>
+
     </div>
 
 </div>
