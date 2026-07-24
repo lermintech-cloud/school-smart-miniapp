@@ -49,11 +49,51 @@
       .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); border-color: #3b82f6 !important; }
       .form-label { color: #cbd5e1 !important; } 
       .form-control::placeholder { color: #64748b !important; }
+
+.theme-dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#e2e8f0;
+  --border:#334155;
+}
+
+/* ===== SOFT ===== */
+.theme-soft{
+  --bg:#eef6ee;
+  --card:#ffffff;
+  --text:#1f2937;
+  --border:#b7d3b7;
+}
+
+/* ===== LIGHT ===== */
+.theme-light{
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#111827;
+  --border:#d1d5db;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+}
+
+.card{
+  background:var(--card);
+  color:var(--text);
+  border-color:var(--border);
+}
     </style>
   </head>
   <body>
 
     <div class="app-header">
+      <div class="theme-switcher text-center mb-3">
+  <button class="btn btn-sm btn-primary" onclick="setTheme('dark')">🌙 มืด</button>
+  <button class="btn btn-sm btn-success" onclick="setTheme('soft')">🌿 สบายตา</button>
+  <button class="btn btn-sm btn-warning" onclick="setTheme('light')">☀️ สว่าง</button>
+</div>
+      //////////
       <h3 class="m-0">🏫 ระบบจัดการข้อมูล</h3>
       <p class="m-0 mt-1 small text-muted">โรงเรียนบ้านไร่</p>
     </div>
@@ -440,6 +480,27 @@
           }
         });
       }
+      function setTheme(theme){
+
+  document.body.classList.remove(
+    'theme-dark',
+    'theme-soft',
+    'theme-light'
+  );
+
+  document.body.classList.add('theme-' + theme);
+
+  localStorage.setItem('theme',theme);
+}
+
+window.addEventListener('load',()=>{
+
+  const theme =
+    localStorage.getItem('theme') || 'dark';
+
+  setTheme(theme);
+
+});
     </script>
   </body>
 </html>
