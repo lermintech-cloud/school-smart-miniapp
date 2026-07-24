@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+////////////////////////////////////////////////////
+      body {
+  /* ดันเนื้อหาหรือปรับขอบบนเล็กน้อยเพื่อให้สมดุลเมื่อแถบ Google แสดงขึ้นมา */
+  padding-top: 10px; 
+}
+//////////////////////////////////////
+      body { 
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+        font-family: 'Prompt', sans-serif; 
+        padding-bottom: 90px; 
+        min-height: 100vh; color: #e2e8f0;
+      }
+      
+      .app-header {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        padding: 25px 20px 20px 20px; 
+        border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4); text-align: center; 
+        margin-bottom: 15px; border-bottom: 1px solid #334155;
+      }
+      .app-header h3 { color: #f8fafc; font-weight: 600; }
+      
+      /* --- Tabs Menu --- */
+      .nav-tabs-custom {
+        display: flex; gap: 8px; overflow-x: auto; padding: 10px 5px;
+        scrollbar-width: none;
+      }
+      .nav-tabs-custom::-webkit-scrollbar { display: none; }
+      .tab-btn {
+        white-space: nowrap; padding: 10px 18px; border-radius: 20px;
+        background: #1e293b; color: #94a3b8; border: 1px solid #334155;
+        font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      }
+      .tab-btn.active {
+        background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: #3b82f6;
+      }
+
+      .card { 
+        border-radius: 20px; border: 1px solid #334155; 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3); background-color: #1e293b; color: #e2e8f0;
+      }
+      
+      /* --- Calendar Styles --- */
+      .calendar-container { border-radius: 12px; overflow: hidden; border: 1px solid #334155; }
+      .calendar-table { border-collapse: collapse; margin-bottom: 0; width: 100%; background-color: #1e293b; }
+      .calendar-table th { text-align: center; font-weight: 500; font-size: 0.85rem; padding: 12px 0; border: 1px solid #334155; }
+      .calendar-table th:nth-child(1) { background: rgba(244, 63, 94, 0.1); color: #fca5a5; } 
+      .calendar-table th:nth-child(2) { background: rgba(245, 158, 11, 0.1); color: #fde047; } 
+      .calendar-table th:nth-child(3) { background: rgba(219, 39, 119, 0.1); color: #f9a8d4; } 
+      .calendar-table th:nth-child(4) { background: rgba(22, 163, 74, 0.1); color: #86efac; } 
+      .calendar-table th:nth-child(5) { background: rgba(234, 88, 12, 0.1); color: #fdba74; } 
+      .calendar-table th:nth-child(6) { background: rgba(2, 132, 199, 0.1); color: #7dd3fc; } 
+      .calendar-table th:nth-child(7) { background: rgba(147, 51, 234, 0.1); color: #d8b4fe; } 
+      .calendar-table td { text-align: center; height: 65px; vertical-align: middle; position: relative; width: 14.28%; border: 1px solid #334155; cursor: pointer; }
+      .day-active { color: #f8fafc; }
+      .day-muted { color: #475569; cursor: default !important; background: #0f172a !important;}
+      .today-highlight { background: #3b82f6; color: white !important; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); }
+      .selected-day { background-color: rgba(59, 130, 246, 0.15) !important; border: 2px solid #60a5fa !important; }
+      .event-dot-container { position: absolute; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; }
+      .event-dot { height: 6px; width: 6px; border-radius: 50%; }
+
+      /* --- Events / Table Styles --- */
+      .event-card { border-left: 6px solid #475569; margin-bottom: 12px; border-radius: 16px; background: #0f172a; border-top: 1px solid #334155; border-right: 1px solid #334155; border-bottom: 1px solid #334155; }
+      .event-date-badge { font-size: 0.8rem; background-color: #1e293b; padding: 4px 10px; border-radius: 12px; color: #94a3b8; border: 1px solid #334155; }
+      .generic-table th { background-color: #0f172a; color: #94a3b8; border-color: #334155; font-weight: 500; white-space: nowrap; }
+      .generic-table td { background-color: #1e293b; color: #e2e8f0; border-color: #334155; vertical-align: middle; }
+      
+      .color-selector { display: flex; gap: 12px; margin-top: 10px; }
+      .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+      .color-option.selected { border-color: #f8fafc; transform: scale(1.15); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+      /* --- Buttons & Modals --- */
+      .add-btn { position: fixed; bottom: 30px; right: 30px; border-radius: 20px; width: 60px; height: 60px; font-size: 28px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5); z-index: 1000; }
+      .modal-content { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+      .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+      .form-control { background-color: #0f172a !important; border: 1px solid #334155 !important; color: #f8fafc !important; border-radius:14px; font-size:1rem; }
+      .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); border-color: #3b82f6 !important; }
+      /* --- แก้ไขสีคำอธิบายช่องกรอกข้อมูลให้อ่านง่าย --- */
+      .form-label { color: #cbd5e1 !important; } 
+      .form-control::placeholder { color: #64748b !important; }
+    </style>
+  </head>
+  <body>
+
+    <div class="app-header">
+      <h3 class="m-0">🏫 ระบบจัดการข้อมูล</h3>
+      <p class="m-0 mt-1 small text-muted">โรงเรียนบ้านไร่</p>
+    </div>
+
+    <!-- แถบเมนู Tabs -->
+    <div class="container max-w-md mx-auto px-2 mb-3">
+      <div class="nav-tabs-custom">
+        <button class="tab-btn active" id="tab-CALENDAR" onclick="switchTab('CALENDAR')">📅 ปฏิทินวิชาการ</button>
+        <!-- 🔗 ปุ่มลิงก์ภายนอก (เปิดหน้าต่างใหม่) -->
+        <a href="https://script.google.com/macros/s/AKfycbwv9V_3uW3SK4Cp2AercImyExZiuGTq5DefYEvnvjAJU4GJBkPnHXzjGNcQmvDAxm1zoQ/exec" target="_blank" style="text-decoration: none;">
+          <button class="tab-btn" type="button">🌐ข้อมูลนักเรียน</button>
+        </a>
+        <button class="tab-btn" id="tab-DUTY" onclick="switchTab('DUTY')">👮 ครูเวร</button>
+        <button class="tab-btn" id="tab-UNIFORM" onclick="switchTab('UNIFORM')">👕 ชุดประจำวัน</button>
+        <button class="tab-btn" id="tab-TEACHERS" onclick="switchTab('TEACHERS')">🎂 วันเกิดครู</button>
+      </div>
+    </div>
+
+    <!-- ================= VIEW: CALENDAR ================= -->
+    <div id="view-CALENDAR" class="container max-w-md mx-auto">
+      <div class="card p-3 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+          <button class="btn btn-sm" style="background:#334155; color:#e2e8f0; border-radius:50%;" onclick="changeMonth(-1)">❮</button>
+          <h5 id="monthYearTitle" class="m-0 text-white" style="font-weight: 500;">เดือน ปี</h5>
+          <button class="btn btn-sm" style="background:#334155; color:#e2e8f0; border-radius:50%;" onclick="changeMonth(1)">❯</button>
+        </div>
+        <div class="calendar-container">
+          <table class="calendar-table">
+            <thead><tr><th>อา</th><th>จ</th><th>อ</th><th>พ</th><th>พฤ</th><th>ศ</th><th>ส</th></tr></thead>
+            <tbody id="calendarBody"></tbody>
+          </table>
+        </div>
+        <!-- ================= WIDGET: วันดีวันเสีย (ล้านนา) ================= -->
+      <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #fbbf24; border-radius: 16px;">
+        <div class="d-flex align-items-center">
+          <div class="me-3" style="font-size: 2.2rem; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));">🌕</div>
+          <div>
+            <h6 class="m-0 fw-bold" style="color: #fbbf24; letter-spacing: 0.5px;">ฤกษ์ยามล้านนา (วันดี-วันเสีย)</h6>
+            <p class="m-0 mt-1" style="font-size: 0.85rem; color: #94a3b8;">
+              🟢 <span class="text-white">วันดี:</span> <span id="lannaDayFu">วันพฤหัสบดี</span> | 
+              🔴 <span class="text-white">วันเสีย:</span> <span id="lannaDayJom">วันอาทิตย์</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-end mb-3 mt-4 px-2">
+        <h6 id="eventListTitle" class="m-0 text-white fw-bold">📋 กิจกรรมในเดือนนี้</h6>
+        <button class="btn btn-sm rounded-pill" style="font-size:12px; background:#334155; color:#60a5fa;" onclick="loadData()">🔄 อัปเดต</button>
+      </div>
+      <div id="eventListContainer"></div>
+    </div>
+
+    <!-- ================= VIEW: GENERIC SHEETS (DUTY, UNIFORM, TEACHERS) ================= -->
+    <div id="view-GENERIC" class="container max-w-md mx-auto" style="display:none;">
+      <div class="card p-3 mb-4 overflow-auto">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 id="genericTableTitle" class="m-0 text-white fw-bold">📋 ข้อมูล</h5>
+          <button class="btn btn-sm rounded-pill" style="font-size:12px; background:#334155; color:#60a5fa;" onclick="loadData()">🔄 อัปเดต</button>
+        </div>
+        <table class="table generic-table table-bordered mb-0" style="font-size: 0.9rem;">
+          <thead id="genericTableHead"></thead>
+          <tbody id="genericTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Floating Add Button -->
+    <button class="add-btn" onclick="openAddModal()">+</button>
+
+    <!-- ================= MODAL: CALENDAR ================= -->
+    <div class="modal fade" id="eventModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; padding: 10px;">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title text-white" id="modalTitle">➕ เพิ่มกิจกรรมใหม่</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="modalRowIndex">
+            <div class="mb-3">
+              <label class="form-label text-muted small ms-1">วันที่จัดกิจกรรม</label>
+              <input type="date" id="modalDate" class="form-control form-control-lg">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small ms-1">ชื่อกิจกรรม</label>
+              <input type="text" id="modalName" class="form-control form-control-lg" placeholder="เช่น กีฬาสี">
+            </div>
+            <div class="mb-2">
+              <label class="form-label text-muted small ms-1">สีของกิจกรรม</label>
+              <div class="color-selector">
+                <div class="color-option selected" style="background-color: #60a5fa;" onclick="selectColor(this, '#60a5fa')"></div> 
+                <div class="color-option" style="background-color: #34d399;" onclick="selectColor(this, '#34d399')"></div> 
+                <div class="color-option" style="background-color: #fbbf24;" onclick="selectColor(this, '#fbbf24')"></div> 
+                <div class="color-option" style="background-color: #f87171;" onclick="selectColor(this, '#f87171')"></div> 
+                <div class="color-option" style="background-color: #c084fc;" onclick="selectColor(this, '#c084fc')"></div> 
+              </div>
+              <input type="hidden" id="modalColor" value="#60a5fa">
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn w-100 py-3 text-white fw-bold" style="border-radius:14px; background:linear-gradient(135deg, #3b82f6, #2563eb); border:none;" onclick="saveEvent()">บันทึกข้อมูล</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: GENERIC (ระบบฟอร์มอัตโนมัติ) ================= -->
+    <div class="modal fade" id="genericModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; padding: 10px;">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title text-white fw-bold" id="genericModalTitle">จัดการข้อมูล</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="genericModalRowIndex">
+            <div id="genericModalForm"></div> <!-- ช่องกรอกข้อมูลจะถูกสร้างที่นี่อัตโนมัติ -->
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn w-100 py-3 text-white fw-bold" style="border-radius:14px; background:linear-gradient(135deg, #3b82f6, #2563eb); border:none;" onclick="saveGenericRow()">บันทึกข้อมูล</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentSheet = 'CALENDAR'; // ค่าเริ่มต้น
+      let currentHeaders = []; // เก็บหัวข้อคอลัมน์ของชีตที่กำลังเปิด
+      
+      let eventModalInstance, genericModalInstance;
+      let allEventsData = []; 
+      const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+      let currentMonth = new Date().getMonth(); let currentYear = new Date().getFullYear(); let selectedDate = null; 
+// 🌟 ตั้งค่าวันดี-วันเสีย ล่วงหน้าทั้ง 12 เดือน (อ้างอิงจากปฏิทินล้านนาปีปัจจุบันเทียบกับเดือนสากล)
+      const lannaConfig = [
+        { fu: "วันอังคาร", jom: "วันอาทิตย์" }, // 0: มกราคม 
+        { fu: "วันพุธ", jom: "วันเสาร์" },      // 1: กุมภาพันธ์
+        { fu: "วันพฤหัสบดี", jom: "วันศุกร์" },  // 2: มีนาคม
+        { fu: "วันศุกร์", jom: "วันพุธ" },      // 3: เมษายน
+        { fu: "วันเสาร์", jom: "วันอังคาร" },    // 4: พฤษภาคม
+        { fu: "วันอาทิตย์", jom: "วันจันทร์" },   // 5: มิถุนายน
+        { fu: "วันจันทร์", jom: "วันพฤหัสบดี" },  // 6: กรกฎาคม
+        { fu: "วันศุกร์", jom: "วันพุธ" },      // 7: สิงหาคม
+        { fu: "วันเสาร์", jom: "วันอังคาร" },    // 8: กันยายน
+        { fu: "วันอาทิตย์", jom: "วันจันทร์" },   // 9: ตุลาคม
+        { fu: "วันจันทร์", jom: "วันพฤหัสบดี" },  // 10: พฤศจิกายน
+        { fu: "วันอังคาร", jom: "วันอาทิตย์" }   // 11: ธันวาคม
+      ];
+      window.onload = function() {
+        eventModalInstance = new bootstrap.Modal(document.getElementById('eventModal'));
+        genericModalInstance = new bootstrap.Modal(document.getElementById('genericModal'));
+        loadData();
+      };
+
+      // --- ระบบเปลี่ยน Tab ---
+      function switchTab(sheetName) {
+        currentSheet = sheetName;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('tab-' + sheetName).classList.add('active');
+
+        if(sheetName === 'CALENDAR') {
+          document.getElementById('view-CALENDAR').style.display = 'block';
+          document.getElementById('view-GENERIC').style.display = 'none';
+        } else {
+          document.getElementById('view-CALENDAR').style.display = 'none';
+          document.getElementById('view-GENERIC').style.display = 'block';
+          document.getElementById('genericTableTitle').innerText = `📋 ข้อมูล ${sheetName}`;
+        }
+        loadData();
+      }
+
+      function loadData() {
+        selectedDate = null; 
+        if (currentSheet === 'CALENDAR') {
+           document.getElementById('eventListContainer').innerHTML = '<div class="text-center text-muted py-5">⏳ กำลังโหลด...</div>';
+        } else {
+           document.getElementById('genericTableHead').innerHTML = '';
+           document.getElementById('genericTableBody').innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">⏳ กำลังโหลด...</td></tr>';
+        }
+
+        google.script.run
+          .withSuccessHandler(function(data) {
+            if (currentSheet === 'CALENDAR') {
+              allEventsData = data && data.length > 1 ? data.slice(1) : []; 
+              renderCalendar(); renderEventList(); 
+            } else {
+              renderGenericTable(data);
+            }
+          }).getTableDataForWeb(currentSheet);
+      }
+
+      // --- ระบบปฏิทิน (CALENDAR) ---
+      function changeMonth(dir) { currentMonth += dir; if (currentMonth < 0) { currentMonth = 11; currentYear--; } else if (currentMonth > 11) { currentMonth = 0; currentYear++; } selectedDate = null; renderCalendar(); renderEventList(); }
+      function onDayClick(day) { selectedDate = (selectedDate === day) ? null : day; renderCalendar(); renderEventList(); }
+      
+      function renderCalendar() {
+        document.getElementById('monthYearTitle').innerText = `${monthNames[currentMonth]} ${currentYear + 543}`;
+        // 🌟 สั่งให้อัปเดตวันดี-วันเสีย ตามเดือนที่กำลังเปิดดูอยู่
+        if(document.getElementById('lannaDayFu')) document.getElementById('lannaDayFu').innerText = lannaConfig[currentMonth].fu;
+        if(document.getElementById('lannaDayJom')) document.getElementById('lannaDayJom').innerText = lannaConfig[currentMonth].jom;
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const tbody = document.getElementById('calendarBody'); tbody.innerHTML = '';
+        let date = 1;
+        for (let i = 0; i < 6; i++) {
+          let row = document.createElement('tr');
+          for (let j = 0; j < 7; j++) {
+            let cell = document.createElement('td');
+            if (i === 0 && j < firstDay) { cell.classList.add('day-muted'); } 
+            else if (date > daysInMonth) { cell.classList.add('day-muted'); } 
+            else {
+              let isToday = (date === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear());
+              let isSel = (date === selectedDate);
+              let dHTML = `<span class="${isToday ? 'today-highlight' : ''}">${date}</span>`;
+              
+              let evs = allEventsData.filter(ev => ev[3] && new Date(ev[3]).getDate() === date && new Date(ev[3]).getMonth() === currentMonth && new Date(ev[3]).getFullYear() === currentYear);
+              if(evs.length > 0) {
+                let dots = '<div class="event-dot-container">'; evs.slice(0,3).forEach(e => dots += `<div class="event-dot" style="background:${e[4]||'#60a5fa'};"></div>`);
+                dHTML += dots + '</div>';
+              }
+              cell.innerHTML = dHTML; cell.classList.add('day-active'); if(isSel) cell.classList.add('selected-day');
+              let cD = date; cell.onclick = () => onDayClick(cD);
+              date++;
+            }
+            row.appendChild(cell);
+          }
+          tbody.appendChild(row); if (date > daysInMonth) break;
+        }
+      }
+
+      function formatThaiDateFull(ts, fb) { if(!ts) return fb; const d = new Date(ts); return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`; }
+
+      function renderEventList() {
+        const cont = document.getElementById('eventListContainer'); const title = document.getElementById('eventListTitle');
+        let html = '';
+        let filtered = allEventsData.filter(ev => {
+          if(!ev[3]) return false; let d = new Date(ev[3]); let sameM = (d.getMonth() === currentMonth && d.getFullYear() === currentYear);
+          if (selectedDate !== null) return sameM && (d.getDate() === selectedDate); return sameM;
+        });
+        filtered.sort((a, b) => a[3] - b[3]);
+
+        title.innerHTML = selectedDate ? `📌 วันที่ ${selectedDate}` : `📋 ในเดือนนี้`;
+        if(filtered.length === 0) { cont.innerHTML = `<div class="card p-5 text-center text-muted border-0 shadow-sm" style="background:#0f172a;">ไม่มีกิจกรรม</div>`; return; }
+
+        filtered.forEach(ev => {
+          html += `
+            <div class="card p-3 event-card d-flex flex-row justify-content-between align-items-center" style="border-left-color: ${ev[4]||'#60a5fa'};">
+              <div><div class="mb-1"><span class="event-date-badge">📅 ${formatThaiDateFull(ev[3], ev[0])}</span></div><div style="font-size: 1rem; color: #f8fafc;">${ev[1]}</div></div>
+              <div class="d-flex flex-column gap-2 ms-3">
+                <button class="btn btn-sm" style="border-radius:10px; background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openEditModal(${ev[2]}, '${ev[0]}', '${ev[1]}', '${ev[4]||'#60a5fa'}')">✏️</button>
+                <button class="btn btn-sm" style="border-radius:10px; background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${ev[2]})">🗑️</button>
+              </div>
+            </div>`;
+        });
+        cont.innerHTML = html;
+      }
+
+      function selectColor(el, hex) { document.querySelectorAll('.color-option').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); document.getElementById('modalColor').value = hex; }
+
+      // --- ระบบตารางอัจฉริยะ (GENERIC SHEETS) ---
+      function renderGenericTable(data) {
+        const thead = document.getElementById('genericTableHead'); const tbody = document.getElementById('genericTableBody');
+        if(!data || data.length === 0) { thead.innerHTML = ''; tbody.innerHTML = '<tr><td class="text-center text-muted">ไม่มีข้อมูล</td></tr>'; return; }
+
+        currentHeaders = data[0];
+        let hHTML = '<tr>'; currentHeaders.forEach(h => hHTML += `<th>${h}</th>`); hHTML += '<th class="text-center">จัดการ</th></tr>';
+        thead.innerHTML = hHTML;
+
+        let bHTML = '';
+        if(data.length === 1) { bHTML = `<tr><td colspan="${currentHeaders.length + 1}" class="text-center text-muted">ยังไม่มีรายการ</td></tr>`; } 
+        else {
+          for(let i=1; i<data.length; i++) {
+            const row = data[i]; const oIdx = row[row.length - 1];
+            bHTML += '<tr>';
+            for(let j=0; j<currentHeaders.length; j++) { bHTML += `<td>${row[j]}</td>`; }
+            const rowDataEnc = encodeURIComponent(JSON.stringify(row.slice(0, currentHeaders.length)));
+            bHTML += `<td class="text-center">
+                        <button class="btn btn-sm mb-1" style="background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openGenericModal(${oIdx}, '${rowDataEnc}')">✏️</button>
+                        <button class="btn btn-sm mb-1" style="background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${oIdx})">🗑️</button>
+                      </td></tr>`;
+          }
+        }
+        tbody.innerHTML = bHTML;
+      }
+
+      // --- ปุ่ม Add / Modal ---
+      function openAddModal() {
+        if(currentSheet === 'CALENDAR') {
+          document.getElementById('modalTitle').innerHTML = '➕ เพิ่มกิจกรรมใหม่'; document.getElementById('modalRowIndex').value = '';
+          document.getElementById('modalDate').value = ''; document.getElementById('modalName').value = '';
+          document.querySelectorAll('.color-option')[0].click(); eventModalInstance.show();
+        } else {
+          openGenericModal(null, null); // เปิดฟอร์มอัจฉริยะ
+        }
+      }
+
+      function openEditModal(rIdx, d, n, c) { // เฉพาะ CALENDAR
+        document.getElementById('modalTitle').innerHTML = '✏️ แก้ไขกิจกรรม'; document.getElementById('modalRowIndex').value = rIdx;
+        try { let p = d.split('/'); document.getElementById('modalDate').value = p.length===3 ? `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}` : d; } catch(e) { document.getElementById('modalDate').value = d; }
+        document.getElementById('modalName').value = n;
+        let cOpts = document.querySelectorAll('.color-option'); let m = false;
+        cOpts.forEach(el => { if(el.style.backgroundColor === c || rgbToHex(el.style.backgroundColor) === c) { el.click(); m = true; }});
+        if(!m) cOpts[0].click(); eventModalInstance.show();
+      }
+      function rgbToHex(rgb) { if(!rgb.startsWith('rgb')) return rgb; let a = rgb.split("(")[1].split(")")[0].split(","); return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length === 1) ? "0"+x : x; }).join(""); }
+
+      function openGenericModal(rIdx, rowDataEnc) {
+        document.getElementById('genericModalTitle').innerText = rIdx ? `✏️ แก้ไขข้อมูล` : `➕ เพิ่มข้อมูล`;
+        document.getElementById('genericModalRowIndex').value = rIdx || '';
+        let rowData = rowDataEnc ? JSON.parse(decodeURIComponent(rowDataEnc)) : null;
+        let formHTML = '';
+        for(let i=0; i<currentHeaders.length; i++) {
+          formHTML += `<div class="mb-3"><label class="form-label text-muted small ms-1">${currentHeaders[i]}</label>
+                       <input type="text" id="genericInput_${i}" class="form-control" value="${rowData ? rowData[i] : ''}"></div>`;
+        }
+        document.getElementById('genericModalForm').innerHTML = formHTML;
+        genericModalInstance.show();
+      }
+
+      // --- บันทึก / ลบ ข้อมูล ---
+      function saveEvent() {
+        const rIdx = document.getElementById('modalRowIndex').value; const d = document.getElementById('modalDate').value;
+        const n = document.getElementById('modalName').value; const c = document.getElementById('modalColor').value;
+        if(!d || !n) { Swal.fire({icon: 'warning', title: 'ไม่ครบ!', background: '#1e293b', color: '#f8fafc'}); return; }
+        eventModalInstance.hide(); Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
+        const rd = [d, n, c]; 
+        if(rIdx) { google.script.run.withSuccessHandler(fSuccess).updateRowFromWeb(currentSheet, parseInt(rIdx), rd); } 
+        else { google.script.run.withSuccessHandler(fSuccess).appendDataFromWeb(currentSheet, rd); }
+      }
+
+      function saveGenericRow() {
+        const rIdx = document.getElementById('genericModalRowIndex').value; let nd = [];
+        for(let i=0; i<currentHeaders.length; i++) { nd.push(document.getElementById(`genericInput_${i}`).value); }
+        genericModalInstance.hide(); Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
+        if(rIdx) { google.script.run.withSuccessHandler(fSuccess).updateRowFromWeb(currentSheet, parseInt(rIdx), nd); } 
+        else { google.script.run.withSuccessHandler(fSuccess).appendDataFromWeb(currentSheet, nd); }
+      }
+
+      function fSuccess() { Swal.fire({icon: 'success', title: 'สำเร็จ!', background: '#1e293b', color: '#f8fafc'}); loadData(); }
+
+      function deleteRowData(rIdx) {
+        Swal.fire({
+          title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#f87171',
+          cancelButtonColor: '#475569', confirmButtonText: 'ลบเลย', background: '#1e293b', color: '#f8fafc'
+        }).then((res) => {
+          if (res.isConfirmed) {
+            Swal.fire({ title: 'กำลังลบ...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
+            google.script.run.withSuccessHandler(fSuccess).deleteRowFromWeb(currentSheet, rIdx);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
