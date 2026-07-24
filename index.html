@@ -379,11 +379,15 @@
         genericModalInstance.show();
       }
 
-      // 🌐 ฟังก์ชันกลางสำหรับส่งข้อมูล (POST Request)
+      // 🌐 ฟังก์ชันกลางสำหรับส่งข้อมูล (POST Request) แบบแก้ปัญหา CORS
       async function sendPostRequest(payload) {
         try {
           const response = await fetch(WEB_APP_URL, {
             method: 'POST',
+            redirect: 'follow', // จำเป็นต้องมีสำหรับ Google Apps Script
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8" // หลอกเบราว์เซอร์ว่าเป็น Text ธรรมดาเพื่อเลี่ยงการบล็อก
+            },
             body: JSON.stringify(payload)
           });
           const res = await response.json();
@@ -394,7 +398,8 @@
             Swal.fire('ล้มเหลว', res.message, 'error');
           }
         } catch (error) {
-          Swal.fire('ข้อผิดพลาด', error.message, 'error');
+          console.error("POST Error:", error);
+          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งข้อมูลได้ กรุณาตรวจสอบอินเทอร์เน็ตหรือลิงก์ Web App', 'error');
         }
       }
 
