@@ -10,49 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-////////////////////////////////////////////////////
-      body {
-  /* ดันเนื้อหาหรือปรับขอบบนเล็กน้อยเพื่อให้สมดุลเมื่อแถบ Google แสดงขึ้นมา */
-  padding-top: 10px; 
-}
-//////////////////////////////////////
-      body { 
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-        font-family: 'Prompt', sans-serif; 
-        padding-bottom: 90px; 
-        min-height: 100vh; color: #e2e8f0;
-      }
-      
-      .app-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        padding: 25px 20px 20px 20px; 
-        border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4); text-align: center; 
-        margin-bottom: 15px; border-bottom: 1px solid #334155;
-      }
+      body { padding-top: 10px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); font-family: 'Prompt', sans-serif; padding-bottom: 90px; min-height: 100vh; color: #e2e8f0; }
+      .app-header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 25px 20px 20px 20px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.4); text-align: center; margin-bottom: 15px; border-bottom: 1px solid #334155; }
       .app-header h3 { color: #f8fafc; font-weight: 600; }
-      
-      /* --- Tabs Menu --- */
-      .nav-tabs-custom {
-        display: flex; gap: 8px; overflow-x: auto; padding: 10px 5px;
-        scrollbar-width: none;
-      }
+      .nav-tabs-custom { display: flex; gap: 8px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
       .nav-tabs-custom::-webkit-scrollbar { display: none; }
-      .tab-btn {
-        white-space: nowrap; padding: 10px 18px; border-radius: 20px;
-        background: #1e293b; color: #94a3b8; border: 1px solid #334155;
-        font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      }
-      .tab-btn.active {
-        background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: #3b82f6;
-      }
-
-      .card { 
-        border-radius: 20px; border: 1px solid #334155; 
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3); background-color: #1e293b; color: #e2e8f0;
-      }
-      
-      /* --- Calendar Styles --- */
+      .tab-btn { white-space: nowrap; padding: 10px 18px; border-radius: 20px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+      .tab-btn.active { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: #3b82f6; }
+      .card { border-radius: 20px; border: 1px solid #334155; box-shadow: 0 8px 25px rgba(0,0,0,0.3); background-color: #1e293b; color: #e2e8f0; }
       .calendar-container { border-radius: 12px; overflow: hidden; border: 1px solid #334155; }
       .calendar-table { border-collapse: collapse; margin-bottom: 0; width: 100%; background-color: #1e293b; }
       .calendar-table th { text-align: center; font-weight: 500; font-size: 0.85rem; padding: 12px 0; border: 1px solid #334155; }
@@ -70,24 +35,18 @@
       .selected-day { background-color: rgba(59, 130, 246, 0.15) !important; border: 2px solid #60a5fa !important; }
       .event-dot-container { position: absolute; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; }
       .event-dot { height: 6px; width: 6px; border-radius: 50%; }
-
-      /* --- Events / Table Styles --- */
       .event-card { border-left: 6px solid #475569; margin-bottom: 12px; border-radius: 16px; background: #0f172a; border-top: 1px solid #334155; border-right: 1px solid #334155; border-bottom: 1px solid #334155; }
       .event-date-badge { font-size: 0.8rem; background-color: #1e293b; padding: 4px 10px; border-radius: 12px; color: #94a3b8; border: 1px solid #334155; }
       .generic-table th { background-color: #0f172a; color: #94a3b8; border-color: #334155; font-weight: 500; white-space: nowrap; }
       .generic-table td { background-color: #1e293b; color: #e2e8f0; border-color: #334155; vertical-align: middle; }
-      
       .color-selector { display: flex; gap: 12px; margin-top: 10px; }
       .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
       .color-option.selected { border-color: #f8fafc; transform: scale(1.15); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-
-      /* --- Buttons & Modals --- */
       .add-btn { position: fixed; bottom: 30px; right: 30px; border-radius: 20px; width: 60px; height: 60px; font-size: 28px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5); z-index: 1000; }
       .modal-content { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
       .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
       .form-control { background-color: #0f172a !important; border: 1px solid #334155 !important; color: #f8fafc !important; border-radius:14px; font-size:1rem; }
       .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); border-color: #3b82f6 !important; }
-      /* --- แก้ไขสีคำอธิบายช่องกรอกข้อมูลให้อ่านง่าย --- */
       .form-label { color: #cbd5e1 !important; } 
       .form-control::placeholder { color: #64748b !important; }
     </style>
@@ -103,7 +62,6 @@
     <div class="container max-w-md mx-auto px-2 mb-3">
       <div class="nav-tabs-custom">
         <button class="tab-btn active" id="tab-CALENDAR" onclick="switchTab('CALENDAR')">📅 ปฏิทินวิชาการ</button>
-        <!-- 🔗 ปุ่มลิงก์ภายนอก (เปิดหน้าต่างใหม่) -->
         <a href="https://script.google.com/macros/s/AKfycbwv9V_3uW3SK4Cp2AercImyExZiuGTq5DefYEvnvjAJU4GJBkPnHXzjGNcQmvDAxm1zoQ/exec" target="_blank" style="text-decoration: none;">
           <button class="tab-btn" type="button">🌐ข้อมูลนักเรียน</button>
         </a>
@@ -128,7 +86,7 @@
           </table>
         </div>
         <!-- ================= WIDGET: วันดีวันเสีย (ล้านนา) ================= -->
-      <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #fbbf24; border-radius: 16px;">
+      <div class="card p-3 mb-4 mt-3" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #fbbf24; border-radius: 16px;">
         <div class="d-flex align-items-center">
           <div class="me-3" style="font-size: 2.2rem; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));">🌕</div>
           <div>
@@ -202,7 +160,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL: GENERIC (ระบบฟอร์มอัตโนมัติ) ================= -->
+    <!-- ================= MODAL: GENERIC ================= -->
     <div class="modal fade" id="genericModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 24px; padding: 10px;">
@@ -212,7 +170,7 @@
           </div>
           <div class="modal-body">
             <input type="hidden" id="genericModalRowIndex">
-            <div id="genericModalForm"></div> <!-- ช่องกรอกข้อมูลจะถูกสร้างที่นี่อัตโนมัติ -->
+            <div id="genericModalForm"></div>
           </div>
           <div class="modal-footer border-0 pt-0">
             <button type="button" class="btn w-100 py-3 text-white fw-bold" style="border-radius:14px; background:linear-gradient(135deg, #3b82f6, #2563eb); border:none;" onclick="saveGenericRow()">บันทึกข้อมูล</button>
@@ -222,35 +180,34 @@
     </div>
 
     <script>
-      let currentSheet = 'CALENDAR'; // ค่าเริ่มต้น
-      let currentHeaders = []; // เก็บหัวข้อคอลัมน์ของชีตที่กำลังเปิด
+      // =========================================================================
+      // 🔗 การเชื่อมต่อ API Backend (Google Apps Script)
+      // =========================================================================
+      const WEB_APP_URL = "ใส่_URL_ที่ก๊อปปี้มาจาก_Apps_Script_ที่นี่"; 
+      
+      let currentSheet = 'CALENDAR'; 
+      let currentHeaders = []; 
       
       let eventModalInstance, genericModalInstance;
       let allEventsData = []; 
       const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
       let currentMonth = new Date().getMonth(); let currentYear = new Date().getFullYear(); let selectedDate = null; 
-// 🌟 ตั้งค่าวันดี-วันเสีย ล่วงหน้าทั้ง 12 เดือน (อ้างอิงจากปฏิทินล้านนาปีปัจจุบันเทียบกับเดือนสากล)
+
       const lannaConfig = [
-        { fu: "วันอังคาร", jom: "วันอาทิตย์" }, // 0: มกราคม 
-        { fu: "วันพุธ", jom: "วันเสาร์" },      // 1: กุมภาพันธ์
-        { fu: "วันพฤหัสบดี", jom: "วันศุกร์" },  // 2: มีนาคม
-        { fu: "วันศุกร์", jom: "วันพุธ" },      // 3: เมษายน
-        { fu: "วันเสาร์", jom: "วันอังคาร" },    // 4: พฤษภาคม
-        { fu: "วันอาทิตย์", jom: "วันจันทร์" },   // 5: มิถุนายน
-        { fu: "วันจันทร์", jom: "วันพฤหัสบดี" },  // 6: กรกฎาคม
-        { fu: "วันศุกร์", jom: "วันพุธ" },      // 7: สิงหาคม
-        { fu: "วันเสาร์", jom: "วันอังคาร" },    // 8: กันยายน
-        { fu: "วันอาทิตย์", jom: "วันจันทร์" },   // 9: ตุลาคม
-        { fu: "วันจันทร์", jom: "วันพฤหัสบดี" },  // 10: พฤศจิกายน
-        { fu: "วันอังคาร", jom: "วันอาทิตย์" }   // 11: ธันวาคม
+        { fu: "วันอังคาร", jom: "วันอาทิตย์" }, { fu: "วันพุธ", jom: "วันเสาร์" }, 
+        { fu: "วันพฤหัสบดี", jom: "วันศุกร์" }, { fu: "วันศุกร์", jom: "วันพุธ" }, 
+        { fu: "วันเสาร์", jom: "วันอังคาร" }, { fu: "วันอาทิตย์", jom: "วันจันทร์" }, 
+        { fu: "วันจันทร์", jom: "วันพฤหัสบดี" }, { fu: "วันศุกร์", jom: "วันพุธ" }, 
+        { fu: "วันเสาร์", jom: "วันอังคาร" }, { fu: "วันอาทิตย์", jom: "วันจันทร์" }, 
+        { fu: "วันจันทร์", jom: "วันพฤหัสบดี" }, { fu: "วันอังคาร", jom: "วันอาทิตย์" } 
       ];
+
       window.onload = function() {
         eventModalInstance = new bootstrap.Modal(document.getElementById('eventModal'));
         genericModalInstance = new bootstrap.Modal(document.getElementById('genericModal'));
         loadData();
       };
 
-      // --- ระบบเปลี่ยน Tab ---
       function switchTab(sheetName) {
         currentSheet = sheetName;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -267,7 +224,8 @@
         loadData();
       }
 
-      function loadData() {
+      // 🌐 ดึงข้อมูลผ่าน Fetch API แทน google.script.run
+      async function loadData() {
         selectedDate = null; 
         if (currentSheet === 'CALENDAR') {
            document.getElementById('eventListContainer').innerHTML = '<div class="text-center text-muted py-5">⏳ กำลังโหลด...</div>';
@@ -276,26 +234,35 @@
            document.getElementById('genericTableBody').innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">⏳ กำลังโหลด...</td></tr>';
         }
 
-        google.script.run
-          .withSuccessHandler(function(data) {
+        try {
+          const response = await fetch(`${WEB_APP_URL}?action=getTableData&sheetName=${currentSheet}`);
+          const res = await response.json();
+          
+          if (res.success) {
+            let data = res.data;
             if (currentSheet === 'CALENDAR') {
               allEventsData = data && data.length > 1 ? data.slice(1) : []; 
               renderCalendar(); renderEventList(); 
             } else {
               renderGenericTable(data);
             }
-          }).getTableDataForWeb(currentSheet);
+          } else {
+            Swal.fire('ข้อผิดพลาด', 'ไม่สามารถโหลดข้อมูลได้', 'error');
+          }
+        } catch (error) {
+          console.error("Fetch Error:", error);
+          Swal.fire('ข้อผิดพลาด', 'การเชื่อมต่อขัดข้อง โปรดตรวจสอบ URL ของ Web App', 'error');
+        }
       }
 
-      // --- ระบบปฏิทิน (CALENDAR) ---
       function changeMonth(dir) { currentMonth += dir; if (currentMonth < 0) { currentMonth = 11; currentYear--; } else if (currentMonth > 11) { currentMonth = 0; currentYear++; } selectedDate = null; renderCalendar(); renderEventList(); }
       function onDayClick(day) { selectedDate = (selectedDate === day) ? null : day; renderCalendar(); renderEventList(); }
       
       function renderCalendar() {
         document.getElementById('monthYearTitle').innerText = `${monthNames[currentMonth]} ${currentYear + 543}`;
-        // 🌟 สั่งให้อัปเดตวันดี-วันเสีย ตามเดือนที่กำลังเปิดดูอยู่
         if(document.getElementById('lannaDayFu')) document.getElementById('lannaDayFu').innerText = lannaConfig[currentMonth].fu;
         if(document.getElementById('lannaDayJom')) document.getElementById('lannaDayJom').innerText = lannaConfig[currentMonth].jom;
+        
         const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         const tbody = document.getElementById('calendarBody'); tbody.innerHTML = '';
         let date = 1;
@@ -354,7 +321,6 @@
 
       function selectColor(el, hex) { document.querySelectorAll('.color-option').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); document.getElementById('modalColor').value = hex; }
 
-      // --- ระบบตารางอัจฉริยะ (GENERIC SHEETS) ---
       function renderGenericTable(data) {
         const thead = document.getElementById('genericTableHead'); const tbody = document.getElementById('genericTableBody');
         if(!data || data.length === 0) { thead.innerHTML = ''; tbody.innerHTML = '<tr><td class="text-center text-muted">ไม่มีข้อมูล</td></tr>'; return; }
@@ -380,18 +346,17 @@
         tbody.innerHTML = bHTML;
       }
 
-      // --- ปุ่ม Add / Modal ---
       function openAddModal() {
         if(currentSheet === 'CALENDAR') {
           document.getElementById('modalTitle').innerHTML = '➕ เพิ่มกิจกรรมใหม่'; document.getElementById('modalRowIndex').value = '';
           document.getElementById('modalDate').value = ''; document.getElementById('modalName').value = '';
           document.querySelectorAll('.color-option')[0].click(); eventModalInstance.show();
         } else {
-          openGenericModal(null, null); // เปิดฟอร์มอัจฉริยะ
+          openGenericModal(null, null); 
         }
       }
 
-      function openEditModal(rIdx, d, n, c) { // เฉพาะ CALENDAR
+      function openEditModal(rIdx, d, n, c) {
         document.getElementById('modalTitle').innerHTML = '✏️ แก้ไขกิจกรรม'; document.getElementById('modalRowIndex').value = rIdx;
         try { let p = d.split('/'); document.getElementById('modalDate').value = p.length===3 ? `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}` : d; } catch(e) { document.getElementById('modalDate').value = d; }
         document.getElementById('modalName').value = n;
@@ -414,26 +379,50 @@
         genericModalInstance.show();
       }
 
-      // --- บันทึก / ลบ ข้อมูล ---
+      // 🌐 ฟังก์ชันกลางสำหรับส่งข้อมูล (POST Request)
+      async function sendPostRequest(payload) {
+        try {
+          const response = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+          const res = await response.json();
+          if(res.success) {
+            Swal.fire({icon: 'success', title: 'สำเร็จ!', background: '#1e293b', color: '#f8fafc'}); 
+            loadData();
+          } else {
+            Swal.fire('ล้มเหลว', res.message, 'error');
+          }
+        } catch (error) {
+          Swal.fire('ข้อผิดพลาด', error.message, 'error');
+        }
+      }
+
       function saveEvent() {
         const rIdx = document.getElementById('modalRowIndex').value; const d = document.getElementById('modalDate').value;
         const n = document.getElementById('modalName').value; const c = document.getElementById('modalColor').value;
         if(!d || !n) { Swal.fire({icon: 'warning', title: 'ไม่ครบ!', background: '#1e293b', color: '#f8fafc'}); return; }
         eventModalInstance.hide(); Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
+        
         const rd = [d, n, c]; 
-        if(rIdx) { google.script.run.withSuccessHandler(fSuccess).updateRowFromWeb(currentSheet, parseInt(rIdx), rd); } 
-        else { google.script.run.withSuccessHandler(fSuccess).appendDataFromWeb(currentSheet, rd); }
+        const payload = rIdx 
+          ? { action: 'updateRow', sheetName: currentSheet, rowIndex: parseInt(rIdx), newData: rd }
+          : { action: 'appendData', sheetName: currentSheet, rowData: rd };
+        
+        sendPostRequest(payload);
       }
 
       function saveGenericRow() {
         const rIdx = document.getElementById('genericModalRowIndex').value; let nd = [];
         for(let i=0; i<currentHeaders.length; i++) { nd.push(document.getElementById(`genericInput_${i}`).value); }
         genericModalInstance.hide(); Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
-        if(rIdx) { google.script.run.withSuccessHandler(fSuccess).updateRowFromWeb(currentSheet, parseInt(rIdx), nd); } 
-        else { google.script.run.withSuccessHandler(fSuccess).appendDataFromWeb(currentSheet, nd); }
+        
+        const payload = rIdx 
+          ? { action: 'updateRow', sheetName: currentSheet, rowIndex: parseInt(rIdx), newData: nd }
+          : { action: 'appendData', sheetName: currentSheet, rowData: nd };
+        
+        sendPostRequest(payload);
       }
-
-      function fSuccess() { Swal.fire({icon: 'success', title: 'สำเร็จ!', background: '#1e293b', color: '#f8fafc'}); loadData(); }
 
       function deleteRowData(rIdx) {
         Swal.fire({
@@ -442,7 +431,7 @@
         }).then((res) => {
           if (res.isConfirmed) {
             Swal.fire({ title: 'กำลังลบ...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
-            google.script.run.withSuccessHandler(fSuccess).deleteRowFromWeb(currentSheet, rIdx);
+            sendPostRequest({ action: 'deleteRow', sheetName: currentSheet, rowIndex: parseInt(rIdx) });
           }
         });
       }
