@@ -32,7 +32,30 @@
   .calendar-table td { text-align: center; height: 65px; vertical-align: middle; position: relative; width: 14.28%; border: 1px solid #334155; cursor: pointer; }
   .day-active { color: #f8fafc; }
   .day-muted { color: #475569; cursor: default !important; background: #0f172a !important;}
-  .today-highlight { background: #3b82f6; color: white !important; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); }
+  .today-highlight { 
+    position: relative;
+    background: #3b82f6; 
+    color: white !important; 
+    border-radius: 50%; 
+    display: inline-flex; justify-content: center; align-items: center; 
+    width: 32px; height: 32px; 
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); 
+  }
+  .today-highlight::before, .today-highlight::after {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    border: 2px solid #60a5fa; 
+    animation: ripple-2 2s infinite ease-out;
+  }
+  .today-highlight::after {
+    animation-delay: 1s; 
+  }
+  @keyframes ripple-2 {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+  /* ------------------------------------------- */
   .selected-day { background-color: rgba(59, 130, 246, 0.15) !important; border: 2px solid #60a5fa !important; }
   .event-dot-container { position: absolute; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; }
   .event-dot { height: 6px; width: 6px; border-radius: 50%; }
