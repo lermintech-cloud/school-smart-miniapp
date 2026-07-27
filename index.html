@@ -261,13 +261,16 @@
   function onDayClick(day) { selectedDate = (selectedDate === day) ? null : day; renderCalendar(); renderEventList(); }
   
   function renderCalendar() {
-    document.getElementById('monthYearTitle').innerText = `${monthNames[currentMonth]} ${currentYear + 543}`;
+    document.getElementById('monthYearTitle').innerText = `${monthNames[currentMonth]}${currentYear + 543}`;
     if(document.getElementById('lannaDayFu')) document.getElementById('lannaDayFu').innerText = lannaConfig[currentMonth].fu;
     if(document.getElementById('lannaDayJom')) document.getElementById('lannaDayJom').innerText = lannaConfig[currentMonth].jom;
     
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const tbody = document.getElementById('calendarBody'); tbody.innerHTML = '';
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay(); 
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const tbody = document.getElementById('calendarBody'); 
+    tbody.innerHTML = '';
     let date = 1;
+    
     for (let i = 0; i < 6; i++) {
       let row = document.createElement('tr');
       for (let j = 0; j < 7; j++) {
@@ -279,13 +282,32 @@
           let isSel = (date === selectedDate);
           let dHTML = `<span class="${isToday ? 'today-highlight' : ''}">${date}</span>`;
           
+          // ดึงข้อมูลกิจกรรมของวันนี้
           let evs = allEventsData.filter(ev => ev[3] && new Date(ev[3]).getDate() === date && new Date(ev[3]).getMonth() === currentMonth && new Date(ev[3]).getFullYear() === currentYear);
+          
+          // 🌟 ส่วนที่เพิ่มใหม่: เช็กว่ามีคำว่า "วันพระ" ในชื่อกิจกรรมหรือไม่
+          let isWanPhra = evs.some(ev => ev[1].includes('วันพระ'));
+          if (isWanPhra) {
+            // แปะไอคอนรูปพระไว้มุมขวาบน (ปรับ width ได้ตามต้องการ)
+            dHTML += `<img src="https://img.icons8.com/color/48/buddha.png" style="position:absolute; top:3px; right:3px; width:18px; filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));" title="วันพระ">`;
+            
+            // 💡 ออปชันเสริม: หากไม่อยากใช้รูปภาพ อยากใช้เป็น Emoji แทน สามารถคอมเมนต์บรรทัดบน แล้วปลดคอมเมนต์บรรทัดล่างครับ
+            // dHTML += `<div style="position:absolute; top:2px; right:3px; font-size:14px;" title="วันพระ">🪷</div>`;
+          }
+
+          // จุดสีแสดงกิจกรรม (โค้ดเดิม)
           if(evs.length > 0) {
-            let dots = '<div class="event-dot-container">'; evs.slice(0,3).forEach(e => dots += `<div class="event-dot" style="background:${e[4]||'#60a5fa'};"></div>`);
+            let dots = '<div class="event-dot-container">'; 
+            evs.slice(0,3).forEach(e => dots += `<div class="event-dot" style="background:${e[4]||'#60a5fa'};"></div>`);
             dHTML += dots + '</div>';
           }
-          cell.innerHTML = dHTML; cell.classList.add('day-active'); if(isSel) cell.classList.add('selected-day');
-          let cD = date; cell.onclick = () => onDayClick(cD);
+          
+          cell.innerHTML = dHTML; 
+          cell.classList.add('day-active'); 
+          if(isSel) cell.classList.add('selected-day');
+          
+          let cD = date; 
+          cell.onclick = () => onDayClick(cD);
           date++;
         }
         row.appendChild(cell);
