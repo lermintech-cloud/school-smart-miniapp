@@ -66,8 +66,29 @@
   .color-selector { display: flex; gap: 12px; margin-top: 10px; }
   .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
   .color-option.selected { border-color: #f8fafc; transform: scale(1.15); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-  .add-btn { position: fixed; bottom: 30px; right: 30px; border-radius: 20px; width: 60px; height: 60px; font-size: 28px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5); z-index: 1000; }
-  .modal-content { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+.add-btn { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    border-radius: 20px; /* ทรงสี่เหลี่ยมขอบมนตามภาพของคุณ */
+    width: 60px; 
+    height: 60px; 
+    font-size: 28px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+    color: white; 
+    border: none; 
+    z-index: 1000; 
+    animation: fab-pulse 2s infinite; /* เรียกใช้แอนิเมชันเต้นเป็นจังหวะ */
+  }
+
+  @keyframes fab-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  }  .modal-content { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
   .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
   .form-control { background-color: #0f172a !important; border: 1px solid #334155 !important; color: #f8fafc !important; border-radius:14px; font-size:1rem; }
   .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); border-color: #3b82f6 !important; }
