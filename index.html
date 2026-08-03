@@ -94,6 +94,32 @@
   .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); border-color: #3b82f6 !important; }
   .form-label { color: #cbd5e1 !important; } 
   .form-control::placeholder { color: #64748b !important; }
+  /* ✨ เอฟเฟกต์เรืองแสงกระพริบให้ปุ่มปฏิทิน */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #3b82f6; /* พื้นหลังสีฟ้าสดใส */
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  filter: invert(1); /* ทำให้ไอคอนเป็นสีขาวสว่าง */
+  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  animation: calendar-pulse 2s infinite; /* เรียกใช้แอนิเมชันกระพริบ */
+}
+
+/* 🔄 กำหนดจังหวะการกระพริบและเรืองแสง */
+@keyframes calendar-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  70% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); /* ขยายแสงออกไปแล้วจางหาย */
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
 </style>
 
   </head>
