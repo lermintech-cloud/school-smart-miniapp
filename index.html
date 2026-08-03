@@ -709,24 +709,37 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     });
     tbody.innerHTML = bHTML;
   }
-  // 🌟 บังคับให้อนิเมชั่นเรืองแสงทำงานกับทุกเดือนอัตโนมัติ
+  // 🌟 บังคับเรืองแสงทุกคำที่เป็นเดือนแบบอัตโนมัติ
   function applyGlowToMonthYear() {
+    // หาจาก ID เดิมถ้ามี
     const el = document.getElementById('currentMonthYear');
     if (el) {
       el.classList.add('calendar-idle-glow');
+      return;
     }
+
+    // ถ้าหา ID ไม่เจอ ให้กวาดสายหาคำชื่อเดือนในหน้าเว็บแล้วใส่เรืองแสงให้ทันที
+    const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    
+    // ค้นหาทุกแท็กข้อความในหน้า
+    const allElements = document.querySelectorAll('h1, h2, h3, h4, h5, span, div');
+    allElements.forEach(element => {
+      // ถ้าข้อความในแท็กนั้นตรงกับชื่อเดือน หรือมีปี พ.ศ. 256X อยู่ด้วย
+      for (let m of months) {
+        if (element.textContent.includes(m) && element.children.length === 0) {
+          element.classList.add('calendar-idle-glow');
+        }
+      }
+    });
   }
 
-  // สั่งให้ทำงานทันทีตอนโหลดหน้าเว็บเสร็จ
+  // สั่งให้ทำงานตอนโหลดหน้าเว็บเสร็จ และทุกครั้งที่มีการคลิกปุ่ม
   window.addEventListener('DOMContentLoaded', () => {
-    applyGlowToMonthYear();
+    setTimeout(applyGlowToMonthYear, 500);
   });
 
-  // และสั่งให้ทำงานซ้ำทุกครั้งที่มีการคลิกเปลี่ยนเดือน (ดักฟังปุ่มลูกศร)
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('button')) {
-      setTimeout(applyGlowToMonthYear, 100);
-    }
+  document.addEventListener('click', () => {
+    setTimeout(applyGlowToMonthYear, 300);
   });
 </script>
   </body>
