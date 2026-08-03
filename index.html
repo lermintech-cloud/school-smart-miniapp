@@ -232,7 +232,7 @@
   // =========================================================================
   const _supabaseUrl = 'https://kicudfdbckmjxzdguelu.supabase.co'; // ⚠️ เปลี่ยนเป็น URL ของคุณ
   const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpY3VkZmRiY2ttanh6ZGd1ZWx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NDkyMzMsImV4cCI6MjEwMTMyNTIzM30.lscQ3GzA-qwa3acslCLlFcQTCeZd2Cw35WAZEhMkejc'; // ⚠️ เปลี่ยนเป็น Anon Key ของคุณ
-  const supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
+  const db = createClient(_supabaseUrl, _supabaseKey);
   
   let currentSheet = 'calendar'; // Supabase ชอบใช้ตัวพิมพ์เล็ก เราเลยเปลี่ยนชื่อตารางเป็นตัวเล็กครับ
   let currentHeaders = []; 
