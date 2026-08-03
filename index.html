@@ -230,12 +230,13 @@
   // =========================================================================
   // 🔗 การเชื่อมต่อ API Backend (Supabase)
   // =========================================================================
-  const _supabaseUrl = 'https://kicudfdbckmjxzdguelu.supabase.co'; // ⚠️ เปลี่ยนเป็น URL ของคุณ
-  const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpY3VkZmRiY2ttanh6ZGd1ZWx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NDkyMzMsImV4cCI6MjEwMTMyNTIzM30.lscQ3GzA-qwa3acslCLlFcQTCeZd2Cw35WAZEhMkejc'; // ⚠️ เปลี่ยนเป็น Anon Key ของคุณ
-  // ใช้ supabase.createClient โดยตรงได้เลย
-const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpY3VkZmRiY2ttanh6ZGd1ZWx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NDkyMzMsImV4cCI6MjEwMTMyNTIzM30.lscQ3GzA-qwa3acslCLlFcQTCeZd2Cw35WAZEhMkejc');
+  const _supabaseUrl = 'https://kicudfdbckmjxzdguelu.supabase.co'; 
+  const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpY3VkZmRiY2ttanh6ZGd1ZWx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NDkyMzMsImV4cCI6MjEwMTMyNTIzM30.lscQ3GzA-qwa3acslCLlFcQTCeZd2Cw35WAZEhMkejc'; 
   
-  let currentSheet = 'calendar'; // Supabase ชอบใช้ตัวพิมพ์เล็ก เราเลยเปลี่ยนชื่อตารางเป็นตัวเล็กครับ
+  // สร้าง Client และเก็บไว้ในตัวแปรชื่อ db
+  const db = supabase.createClient(_supabaseUrl, _supabaseKey);
+  
+  let currentSheet = 'calendar'; 
   let currentHeaders = []; 
   
   let eventModalInstance, genericModalInstance;
@@ -259,7 +260,7 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
   };
 
   function switchTab(sheetName) {
-    currentSheet = sheetName.toLowerCase(); // แปลง CALENDAR เป็น calendar ให้ตรงกับตาราง Supabase
+    currentSheet = sheetName.toLowerCase(); 
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('tab-' + sheetName).classList.add('active');
 
@@ -274,7 +275,7 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     loadData();
   }
 
-  // 🌐 ดึงข้อมูลผ่าน Supabase API
+  // 🌐 ดึงข้อมูลผ่าน Supabase API (ใช้ db.from แทน supabase.from)
   async function loadData() {
     selectedDate = null; 
     if (currentSheet === 'calendar') {
@@ -285,14 +286,12 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     }
 
     try {
-      // ใช้คำสั่ง select() ดึงข้อมูลทั้งหมดจากตารางที่เลือก
-      const { data, error } = await supabase.from(currentSheet).select('*');
+      const { data, error } = await db.from(currentSheet).select('*');
       
       if (error) throw error;
       
       if (data) {
         if (currentSheet === 'calendar') {
-          // เก็บข้อมูลลงตัวแปรที่ใช้กับปฏิทิน
           allEventsData = data; 
           renderCalendar(); 
           renderEventList(); 
@@ -331,20 +330,17 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
           let isSel = (date === selectedDate);
           let dHTML = `<span class="${isToday ? 'today-highlight' : ''}">${date}</span>`;
           
-          // ดึงข้อมูลกิจกรรมของวันนี้จาก Supabase (ใช้ ev.event_date แทน Index Array เดิม)
           let evs = allEventsData.filter(ev => {
              if(!ev.event_date) return false;
              let d = new Date(ev.event_date);
              return d.getDate() === date && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
           });
           
-          // เช็กว่ามีคำว่า "วันพระ" ในชื่อกิจกรรมหรือไม่ (ใช้ ev.event_name)
           let isWanPhra = evs.some(ev => ev.event_name && ev.event_name.includes('วันพระ'));
           if (isWanPhra) {
             dHTML += `<img src="https://img.icons8.com/color/48/buddha.png" style="position:absolute; top:3px; right:3px; width:18px; filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));" title="วันพระ">`;
           }
 
-          // จุดสีแสดงกิจกรรม (ใช้ ev.color)
           if(evs.length > 0) {
             let dots = '<div class="event-dot-container">'; 
             evs.slice(0,3).forEach(e => dots += `<div class="event-dot" style="background:${e.color||'#60a5fa'};"></div>`);
@@ -383,7 +379,6 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
       return sameM;
     });
     
-    // เรียงกิจกรรมตามวันที่
     filtered.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
 
     title.innerHTML = selectedDate ? `📌 วันที่ ${selectedDate}` : `📋 ในเดือนนี้`;
@@ -408,7 +403,6 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     const thead = document.getElementById('genericTableHead'); const tbody = document.getElementById('genericTableBody');
     if(!data || data.length === 0) { thead.innerHTML = ''; tbody.innerHTML = '<tr><td class="text-center text-muted">ไม่มีข้อมูล</td></tr>'; return; }
 
-    // ดึงหัวตารางจาก Object Keys คอลัมน์แรก (ข้ามคอลัมน์ id และ created_at)
     const rawKeys = Object.keys(data[0]);
     currentHeaders = rawKeys.filter(k => k !== 'id' && k !== 'created_at');
     
@@ -440,7 +434,7 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
 
   function openEditModal(id, d, n, c) {
     document.getElementById('modalTitle').innerHTML = '✏️ แก้ไขกิจกรรม'; document.getElementById('modalRowIndex').value = id;
-    document.getElementById('modalDate').value = d; // วันที่เป็น YYYY-MM-DD จาก Supabase อยู่แล้ว
+    document.getElementById('modalDate').value = d; 
     document.getElementById('modalName').value = n;
     let cOpts = document.querySelectorAll('.color-option'); let m = false;
     cOpts.forEach(el => { if(el.style.backgroundColor === c || rgbToHex(el.style.backgroundColor) === c) { el.click(); m = true; }});
@@ -461,7 +455,6 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     genericModalInstance.show();
   }
 
-  // 🌐 ฟังก์ชันบันทึกกิจกรรม (Insert / Update เข้า Supabase)
   async function saveEvent() {
     const id = document.getElementById('modalRowIndex').value; 
     const d = document.getElementById('modalDate').value;
@@ -478,11 +471,9 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     try {
       let result;
       if(id) {
-        // แก้ไข
-        result = await supabase.from(currentSheet).update(payload).eq('id', id);
+        result = await db.from(currentSheet).update(payload).eq('id', id);
       } else {
-        // เพิ่มใหม่
-        result = await supabase.from(currentSheet).insert([payload]);
+        result = await db.from(currentSheet).insert([payload]);
       }
       
       if(result.error) throw result.error;
@@ -495,7 +486,6 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     }
   }
 
-  // 🌐 ฟังก์ชันบันทึกข้อมูลตารางทั่วไป
   async function saveGenericRow() {
     const id = document.getElementById('genericModalRowIndex').value; 
     let payload = {};
@@ -509,9 +499,9 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     try {
       let result;
       if(id) {
-        result = await supabase.from(currentSheet).update(payload).eq('id', id);
+        result = await db.from(currentSheet).update(payload).eq('id', id);
       } else {
-        result = await supabase.from(currentSheet).insert([payload]);
+        result = await db.from(currentSheet).insert([payload]);
       }
       
       if(result.error) throw result.error;
@@ -524,7 +514,6 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
     }
   }
 
-  // 🌐 ฟังก์ชันลบข้อมูล
   function deleteRowData(id) {
     Swal.fire({
       title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#f87171',
@@ -533,7 +522,7 @@ const db = supabase.createClient('https://kicudfdbckmjxzdguelu.supabase.co', 'ey
       if (res.isConfirmed) {
         Swal.fire({ title: 'กำลังลบ...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
         try {
-          const { error } = await supabase.from(currentSheet).delete().eq('id', id);
+          const { error } = await db.from(currentSheet).delete().eq('id', id);
           if(error) throw error;
           
           Swal.fire({icon: 'success', title: 'ลบเรียบร้อย', background: '#1e293b', color: '#f8fafc'});
