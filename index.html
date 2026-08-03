@@ -430,12 +430,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     document.getElementById('genericModalRowIndex').value = id || '';
     let rowData = rowDataEnc ? JSON.parse(decodeURIComponent(rowDataEnc)) : null;
     
+    // 🔤 พจนานุกรมแปลงชื่อภาษาอังกฤษเป็นภาษาไทย (ให้ตรงกับหัวตาราง)
+    const headerMapping = {
+      'day': 'วัน',
+      'teacher1': 'ครูเวรคนที่ 1',
+      'teacher2': 'ครูเวรคนที่ 2',
+      'uniform_type': 'รูปแบบการแต่งกาย',
+      'event_date': 'วันที่จัดกิจกรรม',
+      'event_name': 'ชื่อกิจกรรม',
+      'color': 'สีสัญลักษณ์',
+      'teacher_name': 'ชื่อ-นามสกุลครู',
+      'birth_date': 'วันเกิด'
+    };
+
     let formHTML = '';
     currentHeaders.forEach((h, i) => {
-      // 💡 กำหนดตัวอย่างการกรอก (Placeholder) และคำอธิบายตามชื่อคอลัมน์
+      // แปลงชื่อคอลัมน์อังกฤษเป็นไทย ถ้าไม่มีในรายการให้แสดงชื่อเดิม
+      let labelThai = headerMapping[h] || h; 
+      
       let placeholderText = '';
       let helperText = '';
+      let inputType = 'text';
 
+      // กำหนดคำแนะนำและตัวอย่างการกรอก
       if (h === 'day') {
         placeholderText = 'เช่น จันทร์, อังคาร, พุธ';
         helperText = 'พิมพ์ชื่อวันเป็นภาษาไทย (จันทร์ - อาทิตย์)';
@@ -448,18 +465,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       } else if (h === 'teacher_name') {
         placeholderText = 'เช่น เฉลิมพล จันทร์แดง';
         helperText = 'ชื่อและนามสกุลจริง';
-      } else if (h === 'birth_date') {
-        placeholderText = 'เช่น 2000-04-28';
-        helperText = 'รูปแบบ ค.ศ. (ปี ค.ศ.-เดือน-วัน เช่น 2000-04-28)';
+      } else if (h === 'birth_date' || h.includes('date')) {
+        inputType = 'date';
+        placeholderText = 'เลือกวันที่';
+        helperText = 'คลิกปุ่มปฏิทินด้านหลังเพื่อเลือกวันที่';
       } else {
-        placeholderText = `กรอกข้อมูล ${h}`;
+        placeholderText = `กรอกข้อมูล ${labelThai}`;
+        helperText = `ระบุข้อมูลช่อง ${labelThai}`;
       }
+
+      let val = rowData ? rowData[h] : '';
 
       formHTML += `
         <div class="mb-3">
-          <label class="form-label text-muted small ms-1 fw-bold">${h}</label>
-          <input type="text" id="genericInput_${h}" class="form-control" 
-                 value="${rowData ? rowData[h] : ''}" 
+          <label class="form-label text-muted small ms-1 fw-bold">${labelThai}</label>
+          <input type="${inputType}" id="genericInput_${h}" class="form-control" 
+                 value="${val}" 
                  placeholder="${placeholderText}">
           <div class="form-text small text-warning ms-1" style="font-size: 0.75rem; opacity: 0.8;">💡 ${helperText}</div>
         </div>`;
