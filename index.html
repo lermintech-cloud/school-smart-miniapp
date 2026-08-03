@@ -399,48 +399,49 @@
 
   function selectColor(el, hex) { document.querySelectorAll('.color-option').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); document.getElementById('modalColor').value = hex; }
 
-  function renderGenericTable(data) {
-    const thead = document.getElementById('genericTableHead'); const tbody = document.getElementById('genericTableBody');
-    if(!data || data.length === 0) { thead.innerHTML = ''; tbody.innerHTML = '<tr><td class="text-center text-muted">ไม่มีข้อมูล</td></tr>'; return; }
-
-    const rawKeys = Object.keys(data[0]);
-    currentHeaders = rawKeys.filter(k => k !== 'id' && k !== 'created_at');
+  function openGenericModal(id, rowDataEnc) {
+    document.getElementById('genericModalTitle').innerText = id ? `✏️ แก้ไขข้อมูล` : `➕ เพิ่มข้อมูล`;
+    document.getElementById('genericModalRowIndex').value = id || '';
+    let rowData = rowDataEnc ? JSON.parse(decodeURIComponent(rowDataEnc)) : null;
     
-    // 🔤 พจนานุกรมแปลงชื่อหัวตารางอังกฤษเป็นภาษาไทย
-    const headerMapping = {
-      'day': 'วัน',
-      'teacher1': 'ครูเวรคนที่ 1',
-      'teacher2': 'ครูเวรคนที่ 2',
-      'uniform_type': 'รูปแบบการแต่งกาย',
-      'event_date': 'วันที่จัดกิจกรรม',
-      'event_name': 'ชื่อกิจกรรม',
-      'color': 'สีสัญลักษณ์',
-      'teacher_name': 'ชื่อ-นามสกุลครู',
-      'birth_date': 'วันเกิด'
-    };
+    let formHTML = '';
+    currentHeaders.forEach((h, i) => {
+      // 💡 กำหนดตัวอย่างการกรอก (Placeholder) และคำอธิบายตามชื่อคอลัมน์
+      let placeholderText = '';
+      let helperText = '';
 
-    let hHTML = '<tr>'; 
-    currentHeaders.forEach(h => {
-      // ถ้ามีในพจนานุกรมให้แสดงภาษาไทย ถ้าไม่มีให้แสดงชื่ออังกฤษตามเดิม
-      let thaiHeader = headerMapping[h] || h;
-      hHTML += `<th>${thaiHeader}</th>`;
-    }); 
-    hHTML += '<th class="text-center">จัดการ</th></tr>';
-    thead.innerHTML = hHTML;
+      if (h === 'day') {
+        placeholderText = 'เช่น จันทร์, อังคาร, พุธ';
+        helperText = 'พิมพ์ชื่อวันเป็นภาษาไทย (จันทร์ - อาทิตย์)';
+      } else if (h === 'teacher1' || h === 'teacher2') {
+        placeholderText = 'เช่น ครูวราภรณ์ หรือ ครูเฉลิมพล';
+        helperText = 'ระบุคำนำหน้าและชื่อ (เช่น ครู...)';
+      } else if (h === 'uniform_type') {
+        placeholderText = 'เช่น ชุดข้าราชการ, ชุดพละ';
+        helperText = 'ระบุรูปแบบชุดแต่งกายในวันนี้';
+      } else if (h === 'teacher_name') {
+        placeholderText = 'เช่น เฉลิมพล จันทร์แดง';
+        helperText = 'ชื่อและนามสกุลจริง';
+      } else if (h === 'birth_date') {
+        placeholderText = 'เช่น 2000-04-28';
+        helperText = 'รูปแบบ ค.ศ. (ปี ค.ศ.-เดือน-วัน เช่น 2000-04-28)';
+      } else {
+        placeholderText = `กรอกข้อมูล ${h}`;
+      }
 
-    let bHTML = '';
-    data.forEach(row => {
-        bHTML += '<tr>';
-        currentHeaders.forEach(h => bHTML += `<td>${row[h]}</td>`);
-        const rowDataEnc = encodeURIComponent(JSON.stringify(row));
-        bHTML += `<td class="text-center">
-                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openGenericModal(${row.id}, '${rowDataEnc}')">✏️</button>
-                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${row.id})">🗑️</button>
-                  </td></tr>`;
+      formHTML += `
+        <div class="mb-3">
+          <label class="form-label text-muted small ms-1 fw-bold">${h}</label>
+          <input type="text" id="genericInput_${h}" class="form-control" 
+                 value="${rowData ? rowData[h] : ''}" 
+                 placeholder="${placeholderText}">
+          <div class="form-text small text-warning ms-1" style="font-size: 0.75rem; opacity: 0.8;">💡 ${helperText}</div>
+        </div>`;
     });
-    tbody.innerHTML = bHTML;
-  }
 
+    document.getElementById('genericModalForm').innerHTML = formHTML;
+    genericModalInstance.show();
+  }
   function openAddModal() {
     if(currentSheet === 'calendar') {
       document.getElementById('modalTitle').innerHTML = '➕ เพิ่มกิจกรรมใหม่'; document.getElementById('modalRowIndex').value = '';
