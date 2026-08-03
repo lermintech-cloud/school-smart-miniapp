@@ -120,6 +120,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
 }
+  /* ✨ แอนิเมชันสำหรับชื่อเดือน */
+.month-animation {
+  animation: month-glow 2s infinite ease-in-out;
+}
+
+@keyframes month-glow {
+  0% { opacity: 0.8; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4); }
+  50% { opacity: 1; text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
+  100% { opacity: 0.8; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4); }
+}
 </style>
 
   </head>
@@ -148,7 +158,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <div class="card p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3 px-2">
       <button class="btn btn-sm" style="background:#334155; color:#e2e8f0; border-radius:50%;" onclick="changeMonth(-1)">❮</button>
-      <h5 id="monthYearTitle" class="m-0 text-white" style="font-weight: 500;">เดือน ปี</h5>
+      <h5 id="monthYearTitle" class="m-0 text-white month-animation" style="font-weight: 500;">เดือน ปี</h5>
       <button class="btn btn-sm" style="background:#334155; color:#e2e8f0; border-radius:50%;" onclick="changeMonth(1)">❯</button>
     </div>
     <div class="calendar-container">
