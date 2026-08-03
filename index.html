@@ -225,13 +225,16 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // =========================================================================
-  // 🔗 การเชื่อมต่อ API Backend (Google Apps Script)
+  // 🔗 การเชื่อมต่อ API Backend (Supabase)
   // =========================================================================
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1Ev8LKQ2d7kKoc2MVg5c5czJmTAKrSVoK0uWbRpmy81GE1AH95cJQm6lGUJpbunTc6w/exec"; 
+  const _supabaseUrl = 'https://kicudfdbckmjxzdguelu.supabase.co'; // ⚠️ เปลี่ยนเป็น URL ของคุณ
+  const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpY3VkZmRiY2ttanh6ZGd1ZWx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NDkyMzMsImV4cCI6MjEwMTMyNTIzM30.lscQ3GzA-qwa3acslCLlFcQTCeZd2Cw35WAZEhMkejc'; // ⚠️ เปลี่ยนเป็น Anon Key ของคุณ
+  const supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
   
-  let currentSheet = 'CALENDAR'; 
+  let currentSheet = 'calendar'; // Supabase ชอบใช้ตัวพิมพ์เล็ก เราเลยเปลี่ยนชื่อตารางเป็นตัวเล็กครับ
   let currentHeaders = []; 
   
   let eventModalInstance, genericModalInstance;
@@ -255,11 +258,11 @@
   };
 
   function switchTab(sheetName) {
-    currentSheet = sheetName;
+    currentSheet = sheetName.toLowerCase(); // แปลง CALENDAR เป็น calendar ให้ตรงกับตาราง Supabase
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('tab-' + sheetName).classList.add('active');
 
-    if(sheetName === 'CALENDAR') {
+    if(currentSheet === 'calendar') {
       document.getElementById('view-CALENDAR').style.display = 'block';
       document.getElementById('view-GENERIC').style.display = 'none';
     } else {
@@ -270,10 +273,10 @@
     loadData();
   }
 
-  // 🌐 ดึงข้อมูลผ่าน Fetch API แทน google.script.run
+  // 🌐 ดึงข้อมูลผ่าน Supabase API
   async function loadData() {
     selectedDate = null; 
-    if (currentSheet === 'CALENDAR') {
+    if (currentSheet === 'calendar') {
        document.getElementById('eventListContainer').innerHTML = '<div class="text-center text-muted py-5">⏳ กำลังโหลด...</div>';
     } else {
        document.getElementById('genericTableHead').innerHTML = '';
@@ -281,23 +284,24 @@
     }
 
     try {
-      const response = await fetch(`${WEB_APP_URL}?action=getTableData&sheetName=${currentSheet}`);
-      const res = await response.json();
+      // ใช้คำสั่ง select() ดึงข้อมูลทั้งหมดจากตารางที่เลือก
+      const { data, error } = await supabase.from(currentSheet).select('*');
       
-      if (res.success) {
-        let data = res.data;
-        if (currentSheet === 'CALENDAR') {
-          allEventsData = data && data.length > 1 ? data.slice(1) : []; 
-          renderCalendar(); renderEventList(); 
+      if (error) throw error;
+      
+      if (data) {
+        if (currentSheet === 'calendar') {
+          // เก็บข้อมูลลงตัวแปรที่ใช้กับปฏิทิน
+          allEventsData = data; 
+          renderCalendar(); 
+          renderEventList(); 
         } else {
           renderGenericTable(data);
         }
-      } else {
-        Swal.fire('ข้อผิดพลาด', 'ไม่สามารถโหลดข้อมูลได้', 'error');
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
-      Swal.fire('ข้อผิดพลาด', 'การเชื่อมต่อขัดข้อง โปรดตรวจสอบ URL ของ Web App', 'error');
+      console.error("Supabase Fetch Error:", error);
+      Swal.fire('ข้อผิดพลาด', 'ไม่สามารถโหลดข้อมูลได้', 'error');
     }
   }
 
@@ -326,23 +330,23 @@
           let isSel = (date === selectedDate);
           let dHTML = `<span class="${isToday ? 'today-highlight' : ''}">${date}</span>`;
           
-          // ดึงข้อมูลกิจกรรมของวันนี้
-          let evs = allEventsData.filter(ev => ev[3] && new Date(ev[3]).getDate() === date && new Date(ev[3]).getMonth() === currentMonth && new Date(ev[3]).getFullYear() === currentYear);
+          // ดึงข้อมูลกิจกรรมของวันนี้จาก Supabase (ใช้ ev.event_date แทน Index Array เดิม)
+          let evs = allEventsData.filter(ev => {
+             if(!ev.event_date) return false;
+             let d = new Date(ev.event_date);
+             return d.getDate() === date && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+          });
           
-          // 🌟 ส่วนที่เพิ่มใหม่: เช็กว่ามีคำว่า "วันพระ" ในชื่อกิจกรรมหรือไม่
-          let isWanPhra = evs.some(ev => ev[1].includes('วันพระ'));
+          // เช็กว่ามีคำว่า "วันพระ" ในชื่อกิจกรรมหรือไม่ (ใช้ ev.event_name)
+          let isWanPhra = evs.some(ev => ev.event_name && ev.event_name.includes('วันพระ'));
           if (isWanPhra) {
-            // แปะไอคอนรูปพระไว้มุมขวาบน (ปรับ width ได้ตามต้องการ)
             dHTML += `<img src="https://img.icons8.com/color/48/buddha.png" style="position:absolute; top:3px; right:3px; width:18px; filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));" title="วันพระ">`;
-            
-            // 💡 ออปชันเสริม: หากไม่อยากใช้รูปภาพ อยากใช้เป็น Emoji แทน สามารถคอมเมนต์บรรทัดบน แล้วปลดคอมเมนต์บรรทัดล่างครับ
-            // dHTML += `<div style="position:absolute; top:2px; right:3px; font-size:14px;" title="วันพระ">🪷</div>`;
           }
 
-          // จุดสีแสดงกิจกรรม (โค้ดเดิม)
+          // จุดสีแสดงกิจกรรม (ใช้ ev.color)
           if(evs.length > 0) {
             let dots = '<div class="event-dot-container">'; 
-            evs.slice(0,3).forEach(e => dots += `<div class="event-dot" style="background:${e[4]||'#60a5fa'};"></div>`);
+            evs.slice(0,3).forEach(e => dots += `<div class="event-dot" style="background:${e.color||'#60a5fa'};"></div>`);
             dHTML += dots + '</div>';
           }
           
@@ -360,27 +364,37 @@
     }
   }
 
-  function formatThaiDateFull(ts, fb) { if(!ts) return fb; const d = new Date(ts); return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`; }
+  function formatThaiDateFull(ts, dStr) { 
+    if(!ts && !dStr) return ''; 
+    const d = ts ? new Date(ts) : new Date(dStr); 
+    return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`; 
+  }
 
   function renderEventList() {
     const cont = document.getElementById('eventListContainer'); const title = document.getElementById('eventListTitle');
     let html = '';
+    
     let filtered = allEventsData.filter(ev => {
-      if(!ev[3]) return false; let d = new Date(ev[3]); let sameM = (d.getMonth() === currentMonth && d.getFullYear() === currentYear);
-      if (selectedDate !== null) return sameM && (d.getDate() === selectedDate); return sameM;
+      if(!ev.event_date) return false; 
+      let d = new Date(ev.event_date); 
+      let sameM = (d.getMonth() === currentMonth && d.getFullYear() === currentYear);
+      if (selectedDate !== null) return sameM && (d.getDate() === selectedDate); 
+      return sameM;
     });
-    filtered.sort((a, b) => a[3] - b[3]);
+    
+    // เรียงกิจกรรมตามวันที่
+    filtered.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
 
     title.innerHTML = selectedDate ? `📌 วันที่ ${selectedDate}` : `📋 ในเดือนนี้`;
     if(filtered.length === 0) { cont.innerHTML = `<div class="card p-5 text-center text-muted border-0 shadow-sm" style="background:#0f172a;">ไม่มีกิจกรรม</div>`; return; }
 
     filtered.forEach(ev => {
       html += `
-        <div class="card p-3 event-card d-flex flex-row justify-content-between align-items-center" style="border-left-color: ${ev[4]||'#60a5fa'};">
-          <div><div class="mb-1"><span class="event-date-badge">📅 ${formatThaiDateFull(ev[3], ev[0])}</span></div><div style="font-size: 1rem; color: #f8fafc;">${ev[1]}</div></div>
+        <div class="card p-3 event-card d-flex flex-row justify-content-between align-items-center" style="border-left-color: ${ev.color||'#60a5fa'};">
+          <div><div class="mb-1"><span class="event-date-badge">📅 ${formatThaiDateFull(null, ev.event_date)}</span></div><div style="font-size: 1rem; color: #f8fafc;">${ev.event_name}</div></div>
           <div class="d-flex flex-column gap-2 ms-3">
-            <button class="btn btn-sm" style="border-radius:10px; background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openEditModal(${ev[2]}, '${ev[0]}', '${ev[1]}', '${ev[4]||'#60a5fa'}')">✏️</button>
-            <button class="btn btn-sm" style="border-radius:10px; background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${ev[2]})">🗑️</button>
+            <button class="btn btn-sm" style="border-radius:10px; background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openEditModal(${ev.id}, '${ev.event_date}', '${ev.event_name}', '${ev.color||'#60a5fa'}')">✏️</button>
+            <button class="btn btn-sm" style="border-radius:10px; background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${ev.id})">🗑️</button>
           </div>
         </div>`;
     });
@@ -393,29 +407,28 @@
     const thead = document.getElementById('genericTableHead'); const tbody = document.getElementById('genericTableBody');
     if(!data || data.length === 0) { thead.innerHTML = ''; tbody.innerHTML = '<tr><td class="text-center text-muted">ไม่มีข้อมูล</td></tr>'; return; }
 
-    currentHeaders = data[0];
+    // ดึงหัวตารางจาก Object Keys คอลัมน์แรก (ข้ามคอลัมน์ id และ created_at)
+    const rawKeys = Object.keys(data[0]);
+    currentHeaders = rawKeys.filter(k => k !== 'id' && k !== 'created_at');
+    
     let hHTML = '<tr>'; currentHeaders.forEach(h => hHTML += `<th>${h}</th>`); hHTML += '<th class="text-center">จัดการ</th></tr>';
     thead.innerHTML = hHTML;
 
     let bHTML = '';
-    if(data.length === 1) { bHTML = `<tr><td colspan="${currentHeaders.length + 1}" class="text-center text-muted">ยังไม่มีรายการ</td></tr>`; } 
-    else {
-      for(let i=1; i<data.length; i++) {
-        const row = data[i]; const oIdx = row[row.length - 1];
+    data.forEach(row => {
         bHTML += '<tr>';
-        for(let j=0; j<currentHeaders.length; j++) { bHTML += `<td>${row[j]}</td>`; }
-        const rowDataEnc = encodeURIComponent(JSON.stringify(row.slice(0, currentHeaders.length)));
+        currentHeaders.forEach(h => bHTML += `<td>${row[h]}</td>`);
+        const rowDataEnc = encodeURIComponent(JSON.stringify(row));
         bHTML += `<td class="text-center">
-                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openGenericModal(${oIdx}, '${rowDataEnc}')">✏️</button>
-                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${oIdx})">🗑️</button>
+                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openGenericModal(${row.id}, '${rowDataEnc}')">✏️</button>
+                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${row.id})">🗑️</button>
                   </td></tr>`;
-      }
-    }
+    });
     tbody.innerHTML = bHTML;
   }
 
   function openAddModal() {
-    if(currentSheet === 'CALENDAR') {
+    if(currentSheet === 'calendar') {
       document.getElementById('modalTitle').innerHTML = '➕ เพิ่มกิจกรรมใหม่'; document.getElementById('modalRowIndex').value = '';
       document.getElementById('modalDate').value = ''; document.getElementById('modalName').value = '';
       document.querySelectorAll('.color-option')[0].click(); eventModalInstance.show();
@@ -424,9 +437,9 @@
     }
   }
 
-  function openEditModal(rIdx, d, n, c) {
-    document.getElementById('modalTitle').innerHTML = '✏️ แก้ไขกิจกรรม'; document.getElementById('modalRowIndex').value = rIdx;
-    try { let p = d.split('/'); document.getElementById('modalDate').value = p.length===3 ? `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}` : d; } catch(e) { document.getElementById('modalDate').value = d; }
+  function openEditModal(id, d, n, c) {
+    document.getElementById('modalTitle').innerHTML = '✏️ แก้ไขกิจกรรม'; document.getElementById('modalRowIndex').value = id;
+    document.getElementById('modalDate').value = d; // วันที่เป็น YYYY-MM-DD จาก Supabase อยู่แล้ว
     document.getElementById('modalName').value = n;
     let cOpts = document.querySelectorAll('.color-option'); let m = false;
     cOpts.forEach(el => { if(el.style.backgroundColor === c || rgbToHex(el.style.backgroundColor) === c) { el.click(); m = true; }});
@@ -434,81 +447,103 @@
   }
   function rgbToHex(rgb) { if(!rgb.startsWith('rgb')) return rgb; let a = rgb.split("(")[1].split(")")[0].split(","); return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length === 1) ? "0"+x : x; }).join(""); }
 
-  function openGenericModal(rIdx, rowDataEnc) {
-    document.getElementById('genericModalTitle').innerText = rIdx ? `✏️ แก้ไขข้อมูล` : `➕ เพิ่มข้อมูล`;
-    document.getElementById('genericModalRowIndex').value = rIdx || '';
+  function openGenericModal(id, rowDataEnc) {
+    document.getElementById('genericModalTitle').innerText = id ? `✏️ แก้ไขข้อมูล` : `➕ เพิ่มข้อมูล`;
+    document.getElementById('genericModalRowIndex').value = id || '';
     let rowData = rowDataEnc ? JSON.parse(decodeURIComponent(rowDataEnc)) : null;
     let formHTML = '';
-    for(let i=0; i<currentHeaders.length; i++) {
-      formHTML += `<div class="mb-3"><label class="form-label text-muted small ms-1">${currentHeaders[i]}</label>
-                   <input type="text" id="genericInput_${i}" class="form-control" value="${rowData ? rowData[i] : ''}"></div>`;
-    }
+    currentHeaders.forEach((h, i) => {
+      formHTML += `<div class="mb-3"><label class="form-label text-muted small ms-1">${h}</label>
+                   <input type="text" id="genericInput_${h}" class="form-control" value="${rowData ? rowData[h] : ''}"></div>`;
+    });
     document.getElementById('genericModalForm').innerHTML = formHTML;
     genericModalInstance.show();
   }
 
-  // 🌐 ฟังก์ชันกลางสำหรับส่งข้อมูล (POST Request) แบบแก้ปัญหา CORS
-  async function sendPostRequest(payload) {
+  // 🌐 ฟังก์ชันบันทึกกิจกรรม (Insert / Update เข้า Supabase)
+  async function saveEvent() {
+    const id = document.getElementById('modalRowIndex').value; 
+    const d = document.getElementById('modalDate').value;
+    const n = document.getElementById('modalName').value; 
+    const c = document.getElementById('modalColor').value;
+    
+    if(!d || !n) { Swal.fire({icon: 'warning', title: 'ไม่ครบ!', background: '#1e293b', color: '#f8fafc'}); return; }
+    
+    eventModalInstance.hide(); 
+    Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
+    
+    const payload = { event_date: d, event_name: n, color: c };
+    
     try {
-      const response = await fetch(WEB_APP_URL, {
-        method: 'POST',
-        redirect: 'follow', // จำเป็นต้องมีสำหรับ Google Apps Script
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8" // หลอกเบราว์เซอร์ว่าเป็น Text ธรรมดาเพื่อเลี่ยงการบล็อก
-        },
-        body: JSON.stringify(payload)
-      });
-      const res = await response.json();
-      if(res.success) {
-        Swal.fire({icon: 'success', title: 'สำเร็จ!', background: '#1e293b', color: '#f8fafc'}); 
-        loadData();
+      let result;
+      if(id) {
+        // แก้ไข
+        result = await supabase.from(currentSheet).update(payload).eq('id', id);
       } else {
-        Swal.fire('ล้มเหลว', res.message, 'error');
+        // เพิ่มใหม่
+        result = await supabase.from(currentSheet).insert([payload]);
       }
+      
+      if(result.error) throw result.error;
+      
+      Swal.fire({icon: 'success', title: 'สำเร็จ!', background: '#1e293b', color: '#f8fafc'}); 
+      loadData();
     } catch (error) {
-      console.error("POST Error:", error);
-      Swal.fire('ข้อผิดพลาด', 'ไม่สามารถส่งข้อมูลได้ กรุณาตรวจสอบอินเทอร์เน็ตหรือลิงก์ Web App', 'error');
+      console.error(error);
+      Swal.fire('ล้มเหลว', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
     }
   }
 
-  function saveEvent() {
-    const rIdx = document.getElementById('modalRowIndex').value; const d = document.getElementById('modalDate').value;
-    const n = document.getElementById('modalName').value; const c = document.getElementById('modalColor').value;
-    if(!d || !n) { Swal.fire({icon: 'warning', title: 'ไม่ครบ!', background: '#1e293b', color: '#f8fafc'}); return; }
-    eventModalInstance.hide(); Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
+  // 🌐 ฟังก์ชันบันทึกข้อมูลตารางทั่วไป
+  async function saveGenericRow() {
+    const id = document.getElementById('genericModalRowIndex').value; 
+    let payload = {};
+    currentHeaders.forEach(h => {
+        payload[h] = document.getElementById(`genericInput_${h}`).value;
+    });
     
-    const rd = [d, n, c]; 
-    const payload = rIdx 
-      ? { action: 'updateRow', sheetName: currentSheet, rowIndex: parseInt(rIdx), newData: rd }
-      : { action: 'appendData', sheetName: currentSheet, rowData: rd };
+    genericModalInstance.hide(); 
+    Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
     
-    sendPostRequest(payload);
+    try {
+      let result;
+      if(id) {
+        result = await supabase.from(currentSheet).update(payload).eq('id', id);
+      } else {
+        result = await supabase.from(currentSheet).insert([payload]);
+      }
+      
+      if(result.error) throw result.error;
+      
+      Swal.fire({icon: 'success', title: 'สำเร็จ!', background: '#1e293b', color: '#f8fafc'}); 
+      loadData();
+    } catch (error) {
+      console.error(error);
+      Swal.fire('ล้มเหลว', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
+    }
   }
 
-  function saveGenericRow() {
-    const rIdx = document.getElementById('genericModalRowIndex').value; let nd = [];
-    for(let i=0; i<currentHeaders.length; i++) { nd.push(document.getElementById(`genericInput_${i}`).value); }
-    genericModalInstance.hide(); Swal.fire({ title: 'กำลังบันทึก...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
-    
-    const payload = rIdx 
-      ? { action: 'updateRow', sheetName: currentSheet, rowIndex: parseInt(rIdx), newData: nd }
-      : { action: 'appendData', sheetName: currentSheet, rowData: nd };
-    
-    sendPostRequest(payload);
-  }
-
-  function deleteRowData(rIdx) {
+  // 🌐 ฟังก์ชันลบข้อมูล
+  function deleteRowData(id) {
     Swal.fire({
       title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#f87171',
       cancelButtonColor: '#475569', confirmButtonText: 'ลบเลย', background: '#1e293b', color: '#f8fafc'
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.isConfirmed) {
         Swal.fire({ title: 'กำลังลบ...', background: '#1e293b', color: '#f8fafc', didOpen: () => Swal.showLoading() });
-        sendPostRequest({ action: 'deleteRow', sheetName: currentSheet, rowIndex: parseInt(rIdx) });
+        try {
+          const { error } = await supabase.from(currentSheet).delete().eq('id', id);
+          if(error) throw error;
+          
+          Swal.fire({icon: 'success', title: 'ลบเรียบร้อย', background: '#1e293b', color: '#f8fafc'});
+          loadData();
+        } catch (error) {
+          console.error(error);
+          Swal.fire('ล้มเหลว', 'ไม่สามารถลบข้อมูลได้', 'error');
+        }
       }
     });
   }
 </script>
-
   </body>
 </html>
