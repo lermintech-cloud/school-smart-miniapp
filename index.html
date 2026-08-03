@@ -406,7 +406,26 @@
     const rawKeys = Object.keys(data[0]);
     currentHeaders = rawKeys.filter(k => k !== 'id' && k !== 'created_at');
     
-    let hHTML = '<tr>'; currentHeaders.forEach(h => hHTML += `<th>${h}</th>`); hHTML += '<th class="text-center">จัดการ</th></tr>';
+    // 🔤 พจนานุกรมแปลงชื่อหัวตารางอังกฤษเป็นภาษาไทย
+    const headerMapping = {
+      'day': 'วัน',
+      'teacher1': 'ครูเวรคนที่ 1',
+      'teacher2': 'ครูเวรคนที่ 2',
+      'uniform_type': 'รูปแบบการแต่งกาย',
+      'event_date': 'วันที่จัดกิจกรรม',
+      'event_name': 'ชื่อกิจกรรม',
+      'color': 'สีสัญลักษณ์',
+      'teacher_name': 'ชื่อ-นามสกุลครู',
+      'birth_date': 'วันเกิด'
+    };
+
+    let hHTML = '<tr>'; 
+    currentHeaders.forEach(h => {
+      // ถ้ามีในพจนานุกรมให้แสดงภาษาไทย ถ้าไม่มีให้แสดงชื่ออังกฤษตามเดิม
+      let thaiHeader = headerMapping[h] || h;
+      hHTML += `<th>${thaiHeader}</th>`;
+    }); 
+    hHTML += '<th class="text-center">จัดการ</th></tr>';
     thead.innerHTML = hHTML;
 
     let bHTML = '';
