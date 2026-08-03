@@ -120,15 +120,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
 }
-  /* ✨ แอนิเมชันสำหรับชื่อเดือน */
+  /* ✨ แอนิเมชันสำหรับชื่อเดือนแบบเด่นชัด */
 .month-animation {
-  animation: month-glow 2s infinite ease-in-out;
+  color: #60a5fa !important; /* เปลี่ยนเป็นสีฟ้าสว่าง */
+  animation: month-pop-glow 2s infinite ease-in-out;
 }
 
-@keyframes month-glow {
-  0% { opacity: 0.8; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4); }
-  50% { opacity: 1; text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
-  100% { opacity: 0.8; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4); }
+@keyframes month-pop-glow {
+  0% { 
+    transform: scale(1); 
+    text-shadow: 0 0 5px rgba(96, 165, 250, 0.4); 
+  }
+  50% { 
+    transform: scale(1.06); /* ขยายใหญ่ขึ้นเล็กน้อยแบบมีจังหวะ */
+    text-shadow: 0 0 20px rgba(96, 165, 250, 0.9), 0 0 30px rgba(59, 130, 246, 0.6); 
+  }
+  100% { 
+    transform: scale(1); 
+    text-shadow: 0 0 5px rgba(96, 165, 250, 0.4); 
+  }
 }
 </style>
 
