@@ -709,6 +709,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     });
     tbody.innerHTML = bHTML;
   }
+  // 🌟 บังคับให้อนิเมชั่นเรืองแสงทำงานกับทุกเดือนอัตโนมัติ
+  function applyGlowToMonthYear() {
+    const el = document.getElementById('currentMonthYear');
+    if (el) {
+      el.classList.add('calendar-idle-glow');
+    }
+  }
+
+  // สั่งให้ทำงานทันทีตอนโหลดหน้าเว็บเสร็จ
+  window.addEventListener('DOMContentLoaded', () => {
+    applyGlowToMonthYear();
+  });
+
+  // และสั่งให้ทำงานซ้ำทุกครั้งที่มีการคลิกเปลี่ยนเดือน (ดักฟังปุ่มลูกศร)
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('button')) {
+      setTimeout(applyGlowToMonthYear, 100);
+    }
+  });
 </script>
   </body>
 </html>
