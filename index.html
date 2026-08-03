@@ -580,6 +580,57 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       }
     });
   }
+  // 📋 ฟังก์ชันสร้างตารางแสดงข้อมูลทั่วไป (ครูเวร, ชุดประจำวัน, วันเกิดครู)
+  function renderGenericTable(data) {
+    const thead = document.getElementById('genericTableHead'); 
+    const tbody = document.getElementById('genericTableBody');
+    
+    if(!data || data.length === 0) { 
+      thead.innerHTML = ''; 
+      tbody.innerHTML = '<tr><td class="text-center text-muted py-4">ยังไม่มีข้อมูลในตารางนี้</td></tr>'; 
+      return; 
+    }
+
+    // ดึงคอลัมน์ทั้งหมดจากข้อมูลจริงที่ Supabase ส่งกลับมา (ตัด id และ created_at ออก)
+    const rawKeys = Object.keys(data[0]);
+    currentHeaders = rawKeys.filter(k => k !== 'id' && k !== 'created_at');
+    
+    // พจนานุกรมแปลงชื่อหัวตารางอังกฤษเป็นไทย
+    const headerMapping = {
+      'day': 'วัน',
+      'teacher1': 'ครูเวรคนที่ 1',
+      'teacher2': 'ครูเวรคนที่ 2',
+      'uniform_type': 'รูปแบบการแต่งกาย',
+      'event_date': 'วันที่จัดกิจกรรม',
+      'event_name': 'ชื่อกิจกรรม',
+      'color': 'สีสัญลักษณ์',
+      'teacher_name': 'ชื่อ-นามสกุลครู',
+      'birth_date': 'วันเกิด'
+    };
+
+    let hHTML = '<tr>'; 
+    currentHeaders.forEach(h => {
+      let thaiHeader = headerMapping[h] || h; 
+      hHTML += `<th>${thaiHeader}</th>`;
+    }); 
+    hHTML += '<th class="text-center">จัดการ</th></tr>';
+    thead.innerHTML = hHTML;
+
+    let bHTML = '';
+    data.forEach(row => {
+        bHTML += '<tr>';
+        currentHeaders.forEach(h => {
+          let cellVal = row[h] !== null && row[h] !== undefined ? row[h] : '';
+          bHTML += `<td>${cellVal}</td>`;
+        });
+        const rowDataEnc = encodeURIComponent(JSON.stringify(row));
+        bHTML += `<td class="text-center">
+                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#fbbf24; border:1px solid #334155;" onclick="openGenericModal(${row.id}, '${rowDataEnc}')">✏️</button>
+                    <button class="btn btn-sm mb-1" style="background:#1e293b; color:#f87171; border:1px solid #334155;" onclick="deleteRowData(${row.id})">🗑️</button>
+                  </td></tr>`;
+    });
+    tbody.innerHTML = bHTML;
+  }
 </script>
   </body>
 </html>
