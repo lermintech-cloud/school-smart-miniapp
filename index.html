@@ -513,11 +513,68 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     document.getElementById('genericModalTitle').innerText = id ? `✏️ แก้ไขข้อมูล` : `➕ เพิ่มข้อมูล`;
     document.getElementById('genericModalRowIndex').value = id || '';
     let rowData = rowDataEnc ? JSON.parse(decodeURIComponent(rowDataEnc)) : null;
+    
+    // พจนานุกรมแปลไทย
+    const headerMapping = {
+      'day': 'วัน',
+      'teacher1': 'ครูเวรคนที่ 1',
+      'teacher2': 'ครูเวรคนที่ 2',
+      'uniform_type': 'รูปแบบการแต่งกาย',
+      'event_date': 'วันที่จัดกิจกรรม',
+      'event_name': 'ชื่อกิจกรรม',
+      'color': 'สีสัญลักษณ์',
+      'teacher_name': 'ชื่อ-นามสกุลครู',
+      'birth_date': 'วันเกิด'
+    };
+
     let formHTML = '';
     currentHeaders.forEach((h, i) => {
-      formHTML += `<div class="mb-3"><label class="form-label text-muted small ms-1">${h}</label>
-                   <input type="text" id="genericInput_${h}" class="form-control" value="${rowData ? rowData[h] : ''}"></div>`;
+      // 🛠️ บังคับเช็คและแปลงเป็นภาษาไทยตรงนี้เลย
+      let labelThai = headerMapping[h] || h; 
+      if (h === 'day') labelThai = 'วัน';
+      if (h === 'teacher1') labelThai = 'ครูเวรคนที่ 1';
+      if (h === 'teacher2') labelThai = 'ครูเวรคนที่ 2';
+      if (h === 'uniform_type') labelThai = 'รูปแบบการแต่งกาย';
+      if (h === 'teacher_name') labelThai = 'ชื่อ-นามสกุลครู';
+      if (h === 'birth_date') labelThai = 'วันเกิด';
+
+      let placeholderText = '';
+      let helperText = '';
+      let inputType = 'text';
+
+      if (h === 'day') {
+        placeholderText = 'เช่น จันทร์, อังคาร, พุธ';
+        helperText = 'พิมพ์ชื่อวันเป็นภาษาไทย (จันทร์ - อาทิตย์)';
+      } else if (h === 'teacher1' || h === 'teacher2') {
+        placeholderText = 'เช่น ครูวราภรณ์ หรือ ครูเฉลิมพล';
+        helperText = 'ระบุคำนำหน้าและชื่อ (เช่น ครู...)';
+      } else if (h === 'uniform_type') {
+        placeholderText = 'เช่น ชุดข้าราชการ, ชุดพละ';
+        helperText = 'ระบุรูปแบบชุดแต่งกายในวันนี้';
+      } else if (h === 'teacher_name') {
+        placeholderText = 'เช่น เฉลิมพล จันทร์แดง';
+        helperText = 'ชื่อและนามสกุลจริง';
+      } else if (h === 'birth_date' || h.includes('date')) {
+        inputType = 'date';
+        placeholderText = 'เลือกวันที่';
+        helperText = 'คลิกปุ่มปฏิทินด้านหลังเพื่อเลือกวันที่';
+      } else {
+        placeholderText = `กรอกข้อมูล ${labelThai}`;
+        helperText = `ระบุข้อมูลช่อง ${labelThai}`;
+      }
+
+      let val = rowData ? rowData[h] : '';
+
+      formHTML += `
+        <div class="mb-3">
+          <label class="form-label text-muted small ms-1 fw-bold">${labelThai}</label>
+          <input type="${inputType}" id="genericInput_${h}" class="form-control" 
+                 value="${val}" 
+                 placeholder="${placeholderText}">
+          <div class="form-text small text-warning ms-1" style="font-size: 0.75rem; opacity: 0.8;">💡 ${helperText}</div>
+        </div>`;
     });
+
     document.getElementById('genericModalForm').innerHTML = formHTML;
     genericModalInstance.show();
   }
