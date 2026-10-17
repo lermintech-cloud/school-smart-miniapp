@@ -218,6 +218,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     #view-ACADEMIC .ac-btn.a { background:linear-gradient(135deg,#38bdf8,#6366f1); }
     #view-ACADEMIC .ac-btn.b { background:linear-gradient(135deg,#34d399,#0d9488); }
   }
+  @media screen {
+    #view-ACADEMIC .ac-year-bar { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+    #view-ACADEMIC .ac-year-btn { width:36px; height:36px; border-radius:50%; border:none; background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#fff; font-size:1.3rem; line-height:1; font-weight:700; box-shadow:0 4px 12px rgba(245,158,11,.45); }
+    #view-ACADEMIC .ac-year-label { padding:6px 18px; border-radius:20px; background:#fff7ed; border:1px solid #fcd34d; color:#92400e; font-weight:500; }
+    #view-ACADEMIC .ac-year-label b { color:#b45309; font-size:1.1rem; }
+    #view-ACADEMIC .ac-year-edit { padding:6px 14px; border-radius:20px; border:1px solid #ddd6fe; background:#f5f3ff; color:#6d28d9; font-size:.85rem; font-weight:500; }
+    #view-ACADEMIC .ac-auto-note { background:#fffbeb; border:1px dashed #f59e0b; color:#92400e; border-radius:12px; padding:8px 12px; font-size:.78rem; margin-bottom:12px; }
+  }
   @media print {
     @page { size: A4 landscape; margin: 8mm; }
     body { background:#fff !important; padding:0 !important; }
@@ -275,19 +283,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <tbody id="calendarBody"></tbody>
       </table>
     </div>
-    <!-- ================= WIDGET: วันดีวันเสีย (ล้านนา) ================= -->
-  <div class="card p-3 mb-4 mt-3" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #fbbf24; border-radius: 16px;">
-    <div class="d-flex align-items-center">
-      <div class="me-3" style="font-size: 2.2rem; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));">🌕</div>
-      <div>
-        <h6 class="m-0 fw-bold" style="color: #fbbf24; letter-spacing: 0.5px;">ฤกษ์ยามล้านนา (วันดี-วันเสีย)</h6>
-        <p class="m-0 mt-1" style="font-size: 0.85rem; color: #94a3b8;">
-          🟢 <span class="text-white">วันดี:</span> <span id="lannaDayFu">วันพฤหัสบดี</span> | 
-          🔴 <span class="text-white">วันเสีย:</span> <span id="lannaDayJom">วันอาทิตย์</span>
-        </p>
-      </div>
-    </div>
-  </div>
   </div>
   <div class="d-flex justify-content-between align-items-end mb-3 mt-4 px-2">
     <h6 id="eventListTitle" class="m-0 text-white fw-bold">📋 กิจกรรมในเดือนนี้</h6>
@@ -303,6 +298,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <h5 class="m-0 text-white fw-bold" id="acTitle">ปฏิทินการศึกษา</h5>
       <div class="small text-muted" id="acSubtitle"></div>
     </div>
+    <div class="ac-year-bar no-print">
+      <button class="ac-year-btn" onclick="changeAcYear(-1)" aria-label="ปีก่อนหน้า">‹</button>
+      <div class="ac-year-label">ปีการศึกษา <b id="acYearLabel"></b></div>
+      <button class="ac-year-btn" onclick="changeAcYear(1)" aria-label="ปีถัดไป">›</button>
+      <button class="ac-year-edit" onclick="editAcYear()">✏️ ปรับค่า</button>
+    </div>
+    <div class="ac-auto-note no-print" id="acAutoNote" style="display:none"></div>
     <div class="ac-pill-group mb-3 no-print">
       <button class="ac-pill" id="acBtn-1" onclick="setAcSem('1')">ภาคเรียนที่ 1</button>
       <button class="ac-pill" id="acBtn-2" onclick="setAcSem('2')">ภาคเรียนที่ 2</button>
@@ -424,23 +426,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
   let currentMonth = new Date().getMonth(); let currentYear = new Date().getFullYear(); let selectedDate = null; 
 
-  const lannaConfig = [
-    { fu: "วันอังคาร", jom: "วันอาทิตย์" }, { fu: "วันพุธ", jom: "วันเสาร์" }, 
-    { fu: "วันพฤหัสบดี", jom: "วันศุกร์" }, { fu: "วันศุกร์", jom: "วันพุธ" }, 
-    { fu: "วันเสาร์", jom: "วันอังคาร" }, { fu: "วันอาทิตย์", jom: "วันจันทร์" }, 
-    { fu: "วันจันทร์", jom: "วันพฤหัสบดี" }, { fu: "วันศุกร์", jom: "วันพุธ" }, 
-    { fu: "วันเสาร์", jom: "วันอังคาร" }, { fu: "วันอาทิตย์", jom: "วันจันทร์" }, 
-    { fu: "วันจันทร์", jom: "วันพฤหัสบดี" }, { fu: "วันอังคาร", jom: "วันอาทิตย์" } 
-  ];
-
-
   // =========================================================================
   // 📆 ปฏิทินวิชาการ 200 วัน
   //   แก้ไขค่าด้านล่างนี้เมื่อขึ้นปีการศึกษาใหม่ (รูปแบบวันที่ YYYY-MM-DD แบบ ค.ศ.)
   //   วันหยุดเพิ่มเติม: เพิ่มกิจกรรมในแท็บ "ปฏิทินวิชาการ" โดยให้ชื่อมีคำว่า "หยุด"
   //   ระบบจะนำมานับเป็นวันหยุดในปฏิทิน 200 วันให้อัตโนมัติ
   // =========================================================================
-  const ACADEMIC_CONFIG = {
+  const ACADEMIC_BASE = {
     yearBE: 2569,
     schoolName: 'โรงเรียนบ้านไร่',
     semesters: {
@@ -462,6 +454,115 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
   };
 
+
+  let ACADEMIC_CONFIG = ACADEMIC_BASE;   // ค่าของปีที่เลือกอยู่ (ถูกสร้างใหม่ทุกครั้งที่เปลี่ยนปี)
+
+  // ---------- ระบบเปลี่ยนปีการศึกษา ----------
+  const AC_FIXED_HOL = [   // วันหยุดที่ตรงวันที่เดิมทุกปี [เดือน-วัน, ชื่อ]
+    ['01-01','วันขึ้นปีใหม่'], ['06-03','วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าสุทิดา'],
+    ['07-28','วันเฉลิมพระชนมพรรษาพระบาทสมเด็จพระเจ้าอยู่หัว'], ['08-12','วันแม่แห่งชาติ'],
+    ['10-13','วันนวมินทรมหาราช'], ['10-23','วันปิยมหาราช'], ['12-05','วันพ่อแห่งชาติ'],
+    ['12-10','วันรัฐธรรมนูญ'], ['12-31','วันสิ้นปี']
+  ];
+  const acKeyOf = (d) => acKey(d.getFullYear(), d.getMonth(), d.getDate());
+  const acIsWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+  // ปีการศึกษาปัจจุบัน: เริ่มนับตั้งแต่ 1 พ.ค.
+  function acCurrentYearBE() { const n = new Date(); return n.getFullYear() + 543 - (n.getMonth() < 4 ? 1 : 0); }
+  let acYear = acCurrentYearBE();
+
+  function acStoreGet() { try { return JSON.parse(localStorage.getItem('acYears') || '{}'); } catch (e) { return {}; } }
+  function acStoreSet(o) { try { localStorage.setItem('acYears', JSON.stringify(o)); return true; } catch (e) { return false; } }
+
+  // สร้างค่าอัตโนมัติ: เลื่อนวันเปิด-ปิดเทอมจากปีฐาน แล้วใส่วันหยุดที่ตรงวันที่ทุกปีพร้อมวันหยุดชดเชย
+  function acGenerate(yearBE) {
+    const delta = yearBE - ACADEMIC_BASE.yearBE;
+    const shift = (k) => { const [y, m, d] = k.split('-'); return `${+y + delta}-${m}-${d}`; };
+    const toWeekday = (k, step) => { const d = acParse(shift(k)); while (acIsWeekend(d)) d.setDate(d.getDate() + step); return acKeyOf(d); };
+    const sems = {};
+    [1, 2].forEach(n => {
+      const b = ACADEMIC_BASE.semesters[n];
+      sems[n] = { start: toWeekday(b.start, 1), end: toWeekday(b.end, -1), target: b.target };
+    });
+    const g = yearBE - 543, hol = {};
+    AC_FIXED_HOL.forEach(([md, name]) => { hol[`${+md.slice(0, 2) >= 5 ? g : g + 1}-${md}`] = name; });
+    Object.keys(hol).sort().forEach(k => {
+      const d = acParse(k);
+      if (!acIsWeekend(d)) return;
+      const c = new Date(d);
+      do { c.setDate(c.getDate() + 1); } while (acIsWeekend(c) || hol[acKeyOf(c)]);
+      hol[acKeyOf(c)] = 'วันหยุดชดเชย' + hol[k];
+    });
+    return { semesters: sems, holidays: hol };
+  }
+
+  function acGetConfig(yearBE) {
+    const saved = acStoreGet()[yearBE];
+    const base = { yearBE, schoolName: ACADEMIC_BASE.schoolName };
+    if (saved) return Object.assign(base, saved, { confirmed: true });
+    if (yearBE === ACADEMIC_BASE.yearBE) return Object.assign(base, { semesters: ACADEMIC_BASE.semesters, holidays: ACADEMIC_BASE.holidays, confirmed: true });
+    return Object.assign(base, acGenerate(yearBE), { confirmed: false });
+  }
+
+  function acApplyYear() {
+    ACADEMIC_CONFIG = acGetConfig(acYear);
+    document.getElementById('acYearLabel').textContent = acYear;
+    const note = document.getElementById('acAutoNote');
+    note.style.display = ACADEMIC_CONFIG.confirmed ? 'none' : 'block';
+    note.innerHTML = '⚠️ ปีนี้ระบบคำนวณให้อัตโนมัติ: เลื่อนวันเปิด-ปิดเทอมจากปีก่อน และใส่วันหยุดที่ตรงวันที่ทุกปีให้แล้ว (มีวันหยุดชดเชยเมื่อตรงวันเสาร์-อาทิตย์) ' +
+      'แต่<b>วันหยุดตามจันทรคติ</b> (มาฆบูชา วิสาขบูชา อาสาฬหบูชา เข้าพรรษา) และวันเปิด-ปิดเทอมจริงตามประกาศ ต้องกด “✏️ ปรับค่า” เพื่อใส่เอง';
+  }
+
+  function acDefaultSem() {
+    if (acYear !== acCurrentYearBE()) return 'all';
+    const t = acKeyOf(new Date());
+    return (t >= ACADEMIC_CONFIG.semesters[2].start) ? '2' : '1';
+  }
+
+  function changeAcYear(delta) { acYear += delta; acApplyYear(); acSem = acDefaultSem(); renderAcademic(); }
+
+  function editAcYear() {
+    const c = ACADEMIC_CONFIG, y = c.yearBE;
+    const holText = Object.keys(c.holidays).sort().map(k => `${k} ${c.holidays[k]}`).join('\n');
+    const inp = (id, v) => `<input type="date" id="${id}" class="swal2-input" style="margin:2px 0;width:100%;font-size:.9rem" value="${v}">`;
+    Swal.fire({
+      title: `ตั้งค่าปีการศึกษา ${y}`, width: 620, background: '#fffdf8', color: '#1e1b4b',
+      html: `<div class="text-start" style="font-size:.85rem">
+        <div class="fw-bold mb-1">ภาคเรียนที่ 1</div>
+        <div class="row g-2 mb-2"><div class="col-6">เปิดเทอม${inp('acS1s', c.semesters[1].start)}</div><div class="col-6">ปิดเทอม${inp('acS1e', c.semesters[1].end)}</div></div>
+        <div class="fw-bold mb-1">ภาคเรียนที่ 2</div>
+        <div class="row g-2 mb-2"><div class="col-6">เปิดเทอม${inp('acS2s', c.semesters[2].start)}</div><div class="col-6">ปิดเทอม${inp('acS2e', c.semesters[2].end)}</div></div>
+        <div class="fw-bold mb-1">วันหยุด (1 บรรทัดต่อ 1 วัน: <code>ปี-เดือน-วัน ชื่อวันหยุด</code> แบบ ค.ศ.)</div>
+        <textarea id="acHolTxt" class="swal2-textarea" style="margin:0;width:100%;height:190px;font-size:.8rem;white-space:pre">${acEsc(holText)}</textarea>
+      </div>`,
+      showCancelButton: true, showDenyButton: true,
+      confirmButtonText: 'บันทึก', cancelButtonText: 'ยกเลิก', denyButtonText: 'รีเซ็ต',
+      confirmButtonColor: '#7c3aed', denyButtonColor: '#f59e0b',
+      preConfirm: () => {
+        const v = id => document.getElementById(id).value;
+        const s1s = v('acS1s'), s1e = v('acS1e'), s2s = v('acS2s'), s2e = v('acS2e');
+        if (!s1s || !s1e || !s2s || !s2e) return Swal.showValidationMessage('กรุณาเลือกวันที่ให้ครบทั้ง 4 ช่อง');
+        if (!(s1s < s1e && s1e < s2s && s2s < s2e)) return Swal.showValidationMessage('ลำดับวันที่ไม่ถูกต้อง (เปิด 1 < ปิด 1 < เปิด 2 < ปิด 2)');
+        const hol = {};
+        for (const line of v('acHolTxt').split('\n').map(t => t.trim()).filter(Boolean)) {
+          const m = line.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+          if (!m) return Swal.showValidationMessage('รูปแบบวันหยุดไม่ถูกต้อง: ' + line);
+          hol[m[1]] = m[2];
+        }
+        return { semesters: { 1: { start: s1s, end: s1e, target: 100 }, 2: { start: s2s, end: s2e, target: 100 } }, holidays: hol };
+      }
+    }).then(r => {
+      const store = acStoreGet();
+      if (r.isConfirmed) {
+        store[y] = r.value;
+        if (!acStoreSet(store)) { Swal.fire({ icon: 'warning', title: 'บันทึกไม่ได้', text: 'เบราว์เซอร์นี้ไม่อนุญาตให้เก็บข้อมูล ค่าที่แก้จะหายเมื่อปิดหน้า', background: '#fffdf8', color: '#1e1b4b' }); }
+        else Swal.fire({ icon: 'success', title: 'บันทึกแล้ว', text: 'ค่านี้เก็บไว้ในเครื่อง/เบราว์เซอร์นี้', timer: 1800, showConfirmButton: false, background: '#fffdf8', color: '#1e1b4b' });
+      } else if (r.isDenied) {
+        delete store[y]; acStoreSet(store);
+      } else return;
+      acApplyYear(); acSem = acSem || acDefaultSem(); renderAcademic();
+    });
+  }
+
   let acSem = null;            // '1' | '2' | 'all'
   let acEvents = [];           // กิจกรรมจากตาราง calendar
   const acThMonths = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
@@ -481,10 +582,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       console.error('Academic load error:', e);
       acEvents = [];   // แสดงปฏิทินจากค่าตั้งต้นได้แม้โหลดกิจกรรมไม่สำเร็จ
     }
-    if (!acSem) {
-      const t = acKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-      acSem = (t >= ACADEMIC_CONFIG.semesters[2].start) ? '2' : '1';
-    }
+    acApplyYear();
+    if (!acSem) acSem = acDefaultSem();
     renderAcademic();
   }
 
@@ -700,8 +799,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   
   function renderCalendar() {
     document.getElementById('monthYearTitle').innerText = `${monthNames[currentMonth]}${currentYear + 543}`;
-    if(document.getElementById('lannaDayFu')) document.getElementById('lannaDayFu').innerText = lannaConfig[currentMonth].fu;
-    if(document.getElementById('lannaDayJom')) document.getElementById('lannaDayJom').innerText = lannaConfig[currentMonth].jom;
     
     const firstDay = new Date(currentYear, currentMonth, 1).getDay(); 
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
