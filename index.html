@@ -140,6 +140,59 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-shadow: 0 0 5px rgba(96, 165, 250, 0.4); 
   }
 }
+  /* ===================== ปฏิทินวิชาการ 200 วัน ===================== */
+  .ac-pill-group { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .ac-pill { padding:8px 16px; border-radius:20px; background:#1e293b; color:#94a3b8; border:1px solid #334155; font-size:.85rem; cursor:pointer; }
+  .ac-pill.active { background:rgba(59,130,246,.2); color:#60a5fa; border-color:#3b82f6; }
+  .ac-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .ac-stat { background:#0f172a; border:1px solid #334155; border-radius:14px; padding:10px 6px; text-align:center; }
+  .ac-stat .v { font-size:1.35rem; font-weight:600; color:#60a5fa; line-height:1.2; }
+  .ac-stat .l { font-size:.7rem; color:#94a3b8; }
+  .ac-progress { height:10px; background:#0f172a; border-radius:10px; overflow:hidden; border:1px solid #334155; }
+  .ac-progress > div { height:100%; background:linear-gradient(90deg,#3b82f6,#34d399); transition:width .4s; }
+  .ac-wrap { overflow-x:auto; border:1px solid #334155; border-radius:12px; }
+  .ac-table { border-collapse:collapse; width:100%; min-width:1010px; font-size:.72rem; }
+  .ac-table th, .ac-table td { border:1px solid #334155; text-align:center; height:34px; min-width:29px; padding:0; color:#e2e8f0; }
+  .ac-table thead th { background:#0f172a; color:#94a3b8; font-weight:500; }
+  .ac-table .ac-month { position:sticky; left:0; z-index:2; min-width:92px; text-align:left; padding:0 8px; background:#0f172a; color:#f8fafc; font-weight:500; white-space:nowrap; }
+  .ac-table .ac-total { min-width:46px; background:rgba(168,85,247,.15); color:#d8b4fe; font-weight:600; }
+  .ac-table .ac-sem-row td { background:rgba(14,165,233,.18); color:#7dd3fc; font-weight:600; height:30px; }
+  .ac-table .ac-sum-row td { background:#334155; color:#f8fafc; font-weight:600; height:32px; }
+  .ac-table td.ac-school { background:#1e293b; cursor:pointer; }
+  .ac-table td.ac-sat { background:rgba(34,197,94,.45); color:#fff; }
+  .ac-table td.ac-sun { background:rgba(251,191,36,.5); color:#fff; }
+  .ac-table td.ac-hol { background:#b91c1c; color:#fff; font-size:.6rem; cursor:pointer; }
+  .ac-table td.ac-off { background:#0b1220; color:#334155; }
+  .ac-table td.ac-none { background:#020617; }
+  .ac-table td.ac-break { background:rgba(251,191,36,.18); color:#fde68a; font-weight:500; }
+  .ac-table td.ac-ev { box-shadow: inset 0 -3px 0 #60a5fa; }
+  .ac-table td.ac-today { outline:2px solid #60a5fa; outline-offset:-2px; font-weight:700; box-shadow:0 0 10px rgba(96,165,250,.7) inset; }
+  .ac-legend { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:.75rem; color:#94a3b8; }
+  .ac-legend i { display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:-3px; margin-right:5px; border:1px solid #475569; }
+  .ac-hol-list { font-size:.85rem; }
+  .ac-hol-list li { padding:4px 0; border-bottom:1px dashed #334155; color:#e2e8f0; }
+  @media print {
+    @page { size: A4 landscape; margin: 8mm; }
+    body { background:#fff !important; padding:0 !important; }
+    body > *:not(#view-ACADEMIC) { display:none !important; }
+    #view-ACADEMIC { display:block !important; max-width:100% !important; }
+    #view-ACADEMIC .no-print { display:none !important; }
+    #view-ACADEMIC .card { background:#fff !important; border:none !important; color:#000 !important; box-shadow:none !important; }
+    .ac-wrap { overflow:visible; border:none; }
+    .ac-table { min-width:0; font-size:8px; }
+    .ac-table th, .ac-table td { color:#000 !important; height:17px; border-color:#555 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .ac-table thead th, .ac-table .ac-month { background:#f1f5f9 !important; position:static; }
+    .ac-table td.ac-school { background:#fff !important; }
+    .ac-table td.ac-sat { background:#86efac !important; }
+    .ac-table td.ac-sun { background:#fcd34d !important; }
+    .ac-table td.ac-hol { background:#b91c1c !important; color:#fff !important; }
+    .ac-table td.ac-off, .ac-table td.ac-none { background:#e5e7eb !important; }
+    .ac-table td.ac-break { background:#fef3c7 !important; }
+    .ac-table .ac-total { background:#f3e8ff !important; }
+    .ac-table .ac-sem-row td { background:#bae6fd !important; }
+    .ac-table .ac-sum-row td { background:#e2e8f0 !important; }
+    .ac-hol-list li, .ac-legend, .ac-print-title { color:#000 !important; }
+  }
 </style>
 
   </head>
@@ -157,6 +210,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <a href="https://script.google.com/macros/s/AKfycbwv9V_3uW3SK4Cp2AercImyExZiuGTq5DefYEvnvjAJU4GJBkPnHXzjGNcQmvDAxm1zoQ/exec" target="_blank" style="text-decoration: none;">
       <button class="tab-btn" type="button">🌐ข้อมูลนักเรียน</button>
     </a>
+    <button class="tab-btn" id="tab-ACADEMIC" onclick="switchTab('ACADEMIC')">📆 ปฏิทิน 200 วัน</button>
     <button class="tab-btn" id="tab-DUTY" onclick="switchTab('DUTY')">👮 ครูเวร</button>
     <button class="tab-btn" id="tab-UNIFORM" onclick="switchTab('UNIFORM')">👕 ชุดประจำวัน</button>
     <button class="tab-btn" id="tab-TEACHERS" onclick="switchTab('TEACHERS')">🎂 วันเกิดครู</button>
@@ -198,6 +252,42 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <div id="eventListContainer"></div>
 </div>
 
+<!-- ================= VIEW: ACADEMIC 200 DAYS ================= -->
+<div id="view-ACADEMIC" class="container max-w-md mx-auto" style="display:none;">
+  <div class="card p-3 mb-3">
+    <div class="text-center mb-2 ac-print-title">
+      <h5 class="m-0 text-white fw-bold" id="acTitle">ปฏิทินการศึกษา</h5>
+      <div class="small text-muted" id="acSubtitle"></div>
+    </div>
+    <div class="ac-pill-group mb-3 no-print">
+      <button class="ac-pill" id="acBtn-1" onclick="setAcSem('1')">ภาคเรียนที่ 1</button>
+      <button class="ac-pill" id="acBtn-2" onclick="setAcSem('2')">ภาคเรียนที่ 2</button>
+      <button class="ac-pill" id="acBtn-all" onclick="setAcSem('all')">ทั้งปี (200 วัน)</button>
+    </div>
+    <div class="ac-stats mb-2 no-print" id="acStats"></div>
+    <div class="ac-progress mb-1 no-print"><div id="acProgressBar" style="width:0%"></div></div>
+    <div class="small text-muted text-center mb-3 no-print" id="acProgressText"></div>
+    <div id="acTables"></div>
+    <div class="ac-legend mt-3">
+      <span><i style="background:#1e293b"></i>วันเรียน (ตัวเลข = วันเรียนสะสม)</span>
+      <span><i style="background:rgba(34,197,94,.45)"></i>วันเสาร์</span>
+      <span><i style="background:rgba(251,191,36,.5)"></i>วันอาทิตย์</span>
+      <span><i style="background:#b91c1c"></i>วันหยุดราชการ/หยุดพิเศษ</span>
+      <span><i style="background:rgba(251,191,36,.18)"></i>ปิดภาคเรียน</span>
+      <span class="no-print"><i style="background:#1e293b; box-shadow:inset 0 -3px 0 #60a5fa"></i>มีกิจกรรมในปฏิทินวิชาการ</span>
+    </div>
+    <div class="small text-warning mt-2" style="opacity:.85;">** หมายเหตุ วันและเวลาเรียนสามารถปรับเปลี่ยนได้ตามสถานการณ์จริง</div>
+    <div class="d-flex gap-2 mt-3 no-print">
+      <button class="btn btn-sm rounded-pill flex-fill" style="background:#334155; color:#60a5fa;" onclick="loadAcademic()">🔄 อัปเดต</button>
+      <button class="btn btn-sm rounded-pill flex-fill" style="background:#334155; color:#34d399;" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+    </div>
+  </div>
+  <div class="card p-3 mb-4">
+    <h6 class="text-white fw-bold mb-2">🔴 รายการวันหยุด</h6>
+    <div id="acHolidayList" class="ac-hol-list"></div>
+  </div>
+</div>
+
 <!-- ================= VIEW: GENERIC SHEETS (DUTY, UNIFORM, TEACHERS) ================= -->
 <div id="view-GENERIC" class="container max-w-md mx-auto" style="display:none;">
   <div class="card p-3 mb-4 overflow-auto">
@@ -213,7 +303,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 </div>
 
 <!-- Floating Add Button -->
-<button class="add-btn" onclick="openAddModal()">+</button>
+<button class="add-btn" id="addBtn" onclick="openAddModal()">+</button>
 
 <!-- ================= MODAL: CALENDAR ================= -->
 <div class="modal fade" id="eventModal" tabindex="-1">
@@ -299,6 +389,202 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     { fu: "วันจันทร์", jom: "วันพฤหัสบดี" }, { fu: "วันอังคาร", jom: "วันอาทิตย์" } 
   ];
 
+
+  // =========================================================================
+  // 📆 ปฏิทินวิชาการ 200 วัน
+  //   แก้ไขค่าด้านล่างนี้เมื่อขึ้นปีการศึกษาใหม่ (รูปแบบวันที่ YYYY-MM-DD แบบ ค.ศ.)
+  //   วันหยุดเพิ่มเติม: เพิ่มกิจกรรมในแท็บ "ปฏิทินวิชาการ" โดยให้ชื่อมีคำว่า "หยุด"
+  //   ระบบจะนำมานับเป็นวันหยุดในปฏิทิน 200 วันให้อัตโนมัติ
+  // =========================================================================
+  const ACADEMIC_CONFIG = {
+    yearBE: 2569,
+    schoolName: 'โรงเรียนบ้านไร่',
+    semesters: {
+      1: { start: '2026-05-18', end: '2026-10-12', target: 100 },
+      2: { start: '2026-11-02', end: '2027-03-26', target: 100 }
+    },
+    holidays: {
+      '2026-06-01': 'วันหยุดชดเชยวันวิสาขบูชา',
+      '2026-06-03': 'วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าสุทิดา',
+      '2026-07-28': 'วันเฉลิมพระชนมพรรษาพระบาทสมเด็จพระเจ้าอยู่หัว',
+      '2026-07-29': 'วันอาสาฬหบูชา',
+      '2026-07-30': 'วันเข้าพรรษา',
+      '2026-08-12': 'วันแม่แห่งชาติ',
+      '2026-12-07': 'วันหยุดชดเชยวันชาติ/วันพ่อแห่งชาติ',
+      '2026-12-10': 'วันรัฐธรรมนูญ',
+      '2026-12-31': 'วันสิ้นปี',
+      '2027-01-01': 'วันขึ้นปีใหม่',
+      '2027-02-22': 'วันหยุดชดเชยมาฆบูชา'
+    }
+  };
+
+  let acSem = null;            // '1' | '2' | 'all'
+  let acEvents = [];           // กิจกรรมจากตาราง calendar
+  const acThMonths = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+  const acThDays = ["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"];
+
+  const acKey = (y, m, d) => `${y}-${String(m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const acParse = (k) => { const [y,m,d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+  const acEsc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  async function loadAcademic() {
+    document.getElementById('acTables').innerHTML = '<div class="text-center text-muted py-5">⏳ กำลังโหลด...</div>';
+    try {
+      const { data, error } = await db.from('calendar').select('*');
+      if (error) throw error;
+      acEvents = data || [];
+    } catch (e) {
+      console.error('Academic load error:', e);
+      acEvents = [];   // แสดงปฏิทินจากค่าตั้งต้นได้แม้โหลดกิจกรรมไม่สำเร็จ
+    }
+    if (!acSem) {
+      const t = acKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+      acSem = (t >= ACADEMIC_CONFIG.semesters[2].start) ? '2' : '1';
+    }
+    renderAcademic();
+  }
+
+  function setAcSem(v) { acSem = v; renderAcademic(); }
+
+  // สร้างข้อมูลของภาคเรียน: map วันที่ -> {type, name, no}
+  function buildSemester(no) {
+    const cfg = ACADEMIC_CONFIG.semesters[no];
+    const hol = Object.assign({}, ACADEMIC_CONFIG.holidays);
+    const evByDate = {};
+    acEvents.forEach(ev => {
+      if (!ev.event_date) return;
+      const k = String(ev.event_date).slice(0, 10);
+      (evByDate[k] = evByDate[k] || []).push(ev);
+      if (ev.event_name && ev.event_name.includes('หยุด') && !hol[k]) hol[k] = ev.event_name;
+    });
+    const days = {}; let n = 0, holCount = 0;
+    const holList = [];
+    const s = acParse(cfg.start), e = acParse(cfg.end);
+    for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+      const k = acKey(d.getFullYear(), d.getMonth(), d.getDate());
+      const wd = d.getDay();
+      let info = { key: k, wd, events: evByDate[k] || [] };
+      if (wd === 6) info.type = 'sat';
+      else if (wd === 0) info.type = 'sun';
+      else if (hol[k]) { info.type = 'hol'; info.name = hol[k]; holCount++; holList.push({ key: k, name: hol[k] }); }
+      else { info.type = 'school'; info.no = ++n; }
+      days[k] = info;
+    }
+    return { no, cfg, days, total: n, holCount, holList, start: s, end: e, evByDate };
+  }
+
+  function renderSemesterTable(sem) {
+    const { cfg, days, start, end } = sem;
+    const todayKey = acKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    // เดือนที่ต้องแสดง: จากเดือนเริ่ม ถึงเดือนสิ้นสุด
+    const months = [];
+    for (let y = start.getFullYear(), m = start.getMonth(); y < end.getFullYear() || (y === end.getFullYear() && m <= end.getMonth());) {
+      months.push({ y, m });
+      m++; if (m > 11) { m = 0; y++; }
+    }
+    let h = `<div class="ac-wrap mb-3"><table class="ac-table"><thead><tr><th class="ac-month">เดือน / วันที่</th>`;
+    for (let d = 1; d <= 31; d++) h += `<th>${d}</th>`;
+    h += `<th class="ac-total">รวมวัน</th></tr></thead><tbody>`;
+    h += `<tr class="ac-sem-row"><td colspan="33">เวลาเรียนภาคเรียนที่ ${sem.no} &nbsp;(${fmtThShort(start)} – ${fmtThShort(end)})</td></tr>`;
+
+    months.forEach(({ y, m }) => {
+      const dim = new Date(y, m + 1, 0).getDate();
+      let rowTotal = 0;
+      let cells = '';
+      for (let d = 1; d <= 31; d++) {
+        if (d > dim) { cells += '<td class="ac-none"></td>'; continue; }
+        const k = acKey(y, m, d);
+        const info = days[k];
+        if (!info) {   // นอกช่วงภาคเรียน (ปิดภาคเรียน)
+          cells += `<td class="ac-break" title="ปิดภาคเรียน"></td>`; continue;
+        }
+        let cls = '', txt = '';
+        if (info.type === 'school') { cls = 'ac-school'; txt = info.no; rowTotal++; }
+        else if (info.type === 'sat') { cls = 'ac-sat'; txt = 'ส'; }
+        else if (info.type === 'sun') { cls = 'ac-sun'; txt = 'อา'; }
+        else { cls = 'ac-hol'; txt = 'หยุด'; }
+        if (info.events.length && info.type === 'school') cls += ' ac-ev';
+        if (k === todayKey) cls += ' ac-today';
+        cells += `<td class="${cls}" onclick="showAcDay('${k}', ${sem.no})">${txt}</td>`;
+      }
+      h += `<tr><td class="ac-month">เดือน${acThMonths[m]} ${String((y + 543) % 100).padStart(2,'0')}</td>${cells}<td class="ac-total">${rowTotal}</td></tr>`;
+    });
+    h += `<tr class="ac-sum-row"><td colspan="32" style="text-align:center">รวมจำนวนวันเรียนภาคเรียนที่ ${sem.no}</td><td class="ac-total" style="background:#a855f7;color:#fff">${sem.total}</td></tr>`;
+    h += `</tbody></table></div>`;
+    return h;
+  }
+
+  function fmtThShort(d) { return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`; }
+
+  function renderAcademic() {
+    ['1','2','all'].forEach(v => document.getElementById('acBtn-' + v).classList.toggle('active', acSem === v));
+    const sems = [buildSemester(1), buildSemester(2)];
+    const view = acSem === 'all' ? sems : [sems[Number(acSem) - 1]];
+    const yearTotal = sems[0].total + sems[1].total;
+
+    document.getElementById('acTitle').textContent = `ปฏิทินการศึกษา ปีการศึกษา ${ACADEMIC_CONFIG.yearBE}`;
+    document.getElementById('acSubtitle').innerHTML =
+      `${ACADEMIC_CONFIG.schoolName} • รวมวันเรียนปกติ <b class="text-white">${yearTotal}</b> วัน<br>` +
+      `ภาคเรียนที่ 1 (${fmtThShort(sems[0].start)} – ${fmtThShort(sems[0].end)})<br>` +
+      `ภาคเรียนที่ 2 (${fmtThShort(sems[1].start)} – ${fmtThShort(sems[1].end)})`;
+
+    // ---- สถิติ ณ วันนี้ ----
+    const now = new Date();
+    const todayKey = acKey(now.getFullYear(), now.getMonth(), now.getDate());
+    const doneIn = (sem) => {
+      let c = 0;
+      Object.values(sem.days).forEach(i => { if (i.type === 'school' && i.key <= todayKey) c++; });
+      return c;
+    };
+    const target = view.reduce((a, s) => a + s.total, 0);
+    const done = view.reduce((a, s) => a + doneIn(s), 0);
+    const left = target - done;
+    const pct = target ? Math.round(done * 100 / target) : 0;
+    document.getElementById('acStats').innerHTML =
+      `<div class="ac-stat"><div class="v">${done}</div><div class="l">วันเรียนที่ผ่านมา</div></div>` +
+      `<div class="ac-stat"><div class="v">${left}</div><div class="l">วันเรียนที่เหลือ</div></div>` +
+      `<div class="ac-stat"><div class="v">${target}</div><div class="l">วันเรียนทั้งหมด</div></div>`;
+    document.getElementById('acProgressBar').style.width = pct + '%';
+
+    // วันนี้เป็นวันเรียนวันที่เท่าไร
+    let todayTxt = '';
+    for (const s of sems) { const i = s.days[todayKey]; if (i) { todayTxt = i.type === 'school' ? ` • วันนี้เป็นวันเรียนที่ ${i.no} ของภาคเรียนที่ ${s.no}` : i.type === 'hol' ? ` • วันนี้: ${acEsc(i.name)}` : ''; } }
+    document.getElementById('acProgressText').innerHTML = `ความคืบหน้า ${pct}%${todayTxt}`;
+
+    // ---- ตาราง ----
+    let html = view.map(renderSemesterTable).join('');
+    if (acSem === 'all') {
+      html += `<div class="ac-wrap"><table class="ac-table" style="min-width:0"><tbody><tr class="ac-sum-row"><td style="text-align:center">รวมจำนวนวันเรียนปกติ ปีการศึกษา ${ACADEMIC_CONFIG.yearBE} &nbsp; รวมทั้งสิ้น ${yearTotal} วัน</td></tr></tbody></table></div>`;
+    }
+    document.getElementById('acTables').innerHTML = html;
+
+    // ---- รายการวันหยุด ----
+    document.getElementById('acHolidayList').innerHTML = view.map(s =>
+      `<div class="fw-bold text-info mt-2 mb-1">ภาคเรียนที่ ${s.no} (${s.holCount} วัน)</div><ul class="list-unstyled m-0">` +
+      (s.holList.length ? s.holList.map(h => {
+        const d = acParse(h.key);
+        return `<li>วัน${acThDays[d.getDay()]}ที่ ${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543} <span class="text-muted">(${acEsc(h.name)})</span></li>`;
+      }).join('') : '<li class="text-muted">ไม่มีวันหยุด</li>') + '</ul>'
+    ).join('');
+  }
+
+  function showAcDay(key, semNo) {
+    const sem = buildSemester(semNo);
+    const info = sem.days[key]; if (!info) return;
+    const d = acParse(key);
+    let body = '';
+    if (info.type === 'school') body += `<div style="font-size:1.1rem">📘 วันเรียนที่ <b>${info.no}</b> / ${sem.total} ของภาคเรียนที่ ${semNo}</div>`;
+    else if (info.type === 'hol') body += `<div style="font-size:1.1rem">🔴 ${acEsc(info.name)}</div>`;
+    if (info.events.length) {
+      body += '<hr style="border-color:#334155"><div class="text-start">' + info.events.map(e =>
+        `<div class="mb-1"><span style="color:${acEsc(e.color || '#60a5fa')}">●</span> ${acEsc(e.event_name)}</div>`).join('') + '</div>';
+    }
+    Swal.fire({
+      title: `วัน${acThDays[d.getDay()]}ที่ ${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`,
+      html: body, background: '#1e293b', color: '#f8fafc', confirmButtonText: 'ปิด'
+    });
+  }
+
   window.onload = function() {
     eventModalInstance = new bootstrap.Modal(document.getElementById('eventModal'));
     genericModalInstance = new bootstrap.Modal(document.getElementById('genericModal'));
@@ -309,6 +595,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     currentSheet = sheetName.toLowerCase(); 
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('tab-' + sheetName).classList.add('active');
+
+    const addBtn = document.getElementById('addBtn');
+    document.getElementById('view-ACADEMIC').style.display = 'none';
+
+    if(currentSheet === 'academic') {
+      document.getElementById('view-CALENDAR').style.display = 'none';
+      document.getElementById('view-GENERIC').style.display = 'none';
+      document.getElementById('view-ACADEMIC').style.display = 'block';
+      if (addBtn) addBtn.style.display = 'none';
+      loadAcademic();
+      return;
+    }
+    if (addBtn) addBtn.style.display = '';
 
     if(currentSheet === 'calendar') {
       document.getElementById('view-CALENDAR').style.display = 'block';
@@ -323,6 +622,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   // 🌐 ดึงข้อมูลผ่าน Supabase API (ใช้ db.from แทน supabase.from)
   async function loadData() {
+    if (currentSheet === 'academic') { loadAcademic(); return; }
     selectedDate = null; 
     if (currentSheet === 'calendar') {
        document.getElementById('eventListContainer').innerHTML = '<div class="text-center text-muted py-5">⏳ กำลังโหลด...</div>';
@@ -510,6 +810,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     genericModalInstance.show();
   }
   function openAddModal() {
+    if(currentSheet === 'academic') return;
     if(currentSheet === 'calendar') {
       document.getElementById('modalTitle').innerHTML = '➕ เพิ่มกิจกรรมใหม่'; document.getElementById('modalRowIndex').value = '';
       document.getElementById('modalDate').value = ''; document.getElementById('modalName').value = '';
