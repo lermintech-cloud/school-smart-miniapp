@@ -171,6 +171,53 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .ac-legend i { display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:-3px; margin-right:5px; border:1px solid #475569; }
   .ac-hol-list { font-size:.85rem; }
   .ac-hol-list li { padding:4px 0; border-bottom:1px dashed #334155; color:#e2e8f0; }
+
+  /* ===================== ปฏิทิน 200 วัน : โทนสว่าง พรีเมี่ยม ===================== */
+  #tab-ACADEMIC { background:linear-gradient(135deg,#fef3c7,#fcd34d); color:#78350f; border-color:#f59e0b; font-weight:600; box-shadow:0 2px 12px rgba(245,158,11,.35); }
+  #tab-ACADEMIC.active { background:linear-gradient(135deg,#fbbf24,#f59e0b 55%,#ec4899); color:#fff; border-color:#fde68a; box-shadow:0 4px 18px rgba(245,158,11,.55); }
+  @media screen {
+    #view-ACADEMIC .card { position:relative; overflow:hidden; background:linear-gradient(160deg,#ffffff 0%,#faf5ff 55%,#fff7ed 100%); color:#1e293b; border:1px solid #e9d5ff; box-shadow:0 12px 34px rgba(124,58,237,.22); }
+    #view-ACADEMIC .card::before { content:''; position:absolute; left:0; right:0; top:0; height:5px; background:linear-gradient(90deg,#f59e0b,#ec4899,#8b5cf6,#0ea5e9,#10b981); }
+    #view-ACADEMIC .text-white { color:#1e1b4b !important; }
+    #view-ACADEMIC .text-muted { color:#64748b !important; }
+    #view-ACADEMIC .text-info { color:#7c3aed !important; }
+    #view-ACADEMIC .text-warning { color:#b45309 !important; }
+    #view-ACADEMIC #acTitle { background:linear-gradient(90deg,#4f46e5,#c026d3,#f59e0b); -webkit-background-clip:text; background-clip:text; color:transparent !important; font-size:1.3rem; }
+    #view-ACADEMIC .ac-pill { background:#f5f3ff; color:#6d28d9; border:1px solid #ddd6fe; font-weight:500; }
+    #view-ACADEMIC .ac-pill.active { background:linear-gradient(135deg,#7c3aed,#ec4899); color:#fff; border-color:transparent; box-shadow:0 4px 14px rgba(168,85,247,.45); }
+    #view-ACADEMIC .ac-stat { border:none; color:#fff; box-shadow:0 6px 16px rgba(0,0,0,.12); }
+    #view-ACADEMIC .ac-stat .v { color:#fff; font-size:1.5rem; }
+    #view-ACADEMIC .ac-stat .l { color:rgba(255,255,255,.92); }
+    #view-ACADEMIC .ac-stat.s1 { background:linear-gradient(135deg,#34d399,#059669); }
+    #view-ACADEMIC .ac-stat.s2 { background:linear-gradient(135deg,#fbbf24,#f97316); }
+    #view-ACADEMIC .ac-stat.s3 { background:linear-gradient(135deg,#818cf8,#7c3aed); }
+    #view-ACADEMIC .ac-progress { background:#ede9fe; border:1px solid #ddd6fe; height:12px; }
+    #view-ACADEMIC .ac-progress > div { background:linear-gradient(90deg,#fbbf24,#ec4899,#8b5cf6); }
+    #view-ACADEMIC .ac-wrap { background:#fff; border:1px solid #ddd6fe; border-radius:16px; box-shadow:0 8px 22px rgba(124,58,237,.14); }
+    #view-ACADEMIC .ac-table th, #view-ACADEMIC .ac-table td { border:1px solid #ece7f7; color:#1e293b; }
+    #view-ACADEMIC .ac-table thead th { background:#f5f3ff; color:#6d28d9; font-weight:600; }
+    #view-ACADEMIC .ac-table .ac-month { background:linear-gradient(135deg,#312e81,#4f46e5); color:#fff; font-weight:600; }
+    #view-ACADEMIC .ac-table thead .ac-month { background:linear-gradient(135deg,#312e81,#4f46e5); color:#fde68a; }
+    #view-ACADEMIC .ac-table .ac-total { background:#ede9fe; color:#6d28d9; font-weight:700; }
+    #view-ACADEMIC .ac-table .ac-sem-row td { background:linear-gradient(90deg,#4f46e5,#9333ea 55%,#ec4899); color:#fff; font-weight:600; text-align:left; padding-left:12px; letter-spacing:.2px; }
+    #view-ACADEMIC .ac-table .ac-sum-row td { background:linear-gradient(90deg,#fde68a,#fbbf24); color:#451a03; font-weight:700; }
+    #view-ACADEMIC .ac-table td.ac-school { background:#ffffff; color:#1e3a8a; font-weight:500; transition:background .15s; }
+    #view-ACADEMIC .ac-table td.ac-school:hover { background:#e0e7ff; }
+    #view-ACADEMIC .ac-table td.ac-sat { background:linear-gradient(135deg,#bbf7d0,#4ade80); color:#14532d; font-weight:600; }
+    #view-ACADEMIC .ac-table td.ac-sun { background:linear-gradient(135deg,#fef08a,#fbbf24); color:#78350f; font-weight:600; }
+    #view-ACADEMIC .ac-table td.ac-hol { background:linear-gradient(135deg,#fb7185,#e11d48); color:#fff; font-weight:600; }
+    #view-ACADEMIC .ac-table td.ac-off { background:#f1f5f9; color:#cbd5e1; }
+    #view-ACADEMIC .ac-table td.ac-none { background:#f3f0fa; }
+    #view-ACADEMIC .ac-table td.ac-break { background:repeating-linear-gradient(135deg,#ede9fe,#ede9fe 6px,#f5f3ff 6px,#f5f3ff 12px); color:#7c3aed; }
+    #view-ACADEMIC .ac-table td.ac-ev { box-shadow:inset 0 -3px 0 #8b5cf6; background:#faf5ff; }
+    #view-ACADEMIC .ac-table td.ac-today { background:linear-gradient(135deg,#fde047,#f59e0b) !important; color:#451a03 !important; font-weight:800; outline:2px solid #d97706; outline-offset:-2px; box-shadow:0 0 12px rgba(245,158,11,.8); }
+    #view-ACADEMIC .ac-legend { color:#475569; }
+    #view-ACADEMIC .ac-legend i { border:1px solid rgba(0,0,0,.12); }
+    #view-ACADEMIC .ac-hol-list li { color:#1e293b; border-bottom:1px dashed #d8b4fe; }
+    #view-ACADEMIC .ac-btn { border:none; color:#fff; font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,.18); }
+    #view-ACADEMIC .ac-btn.a { background:linear-gradient(135deg,#38bdf8,#6366f1); }
+    #view-ACADEMIC .ac-btn.b { background:linear-gradient(135deg,#34d399,#0d9488); }
+  }
   @media print {
     @page { size: A4 landscape; margin: 8mm; }
     body { background:#fff !important; padding:0 !important; }
@@ -207,9 +254,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <div class="container max-w-md mx-auto px-2 mb-3">
   <div class="nav-tabs-custom">
     <button class="tab-btn active" id="tab-CALENDAR" onclick="switchTab('CALENDAR')">📅 ปฏิทินวิชาการ</button>
-    <a href="https://script.google.com/macros/s/AKfycbwv9V_3uW3SK4Cp2AercImyExZiuGTq5DefYEvnvjAJU4GJBkPnHXzjGNcQmvDAxm1zoQ/exec" target="_blank" style="text-decoration: none;">
-      <button class="tab-btn" type="button">🌐ข้อมูลนักเรียน</button>
-    </a>
     <button class="tab-btn" id="tab-ACADEMIC" onclick="switchTab('ACADEMIC')">📆 ปฏิทิน 200 วัน</button>
     <button class="tab-btn" id="tab-DUTY" onclick="switchTab('DUTY')">👮 ครูเวร</button>
     <button class="tab-btn" id="tab-UNIFORM" onclick="switchTab('UNIFORM')">👕 ชุดประจำวัน</button>
@@ -269,17 +313,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="small text-muted text-center mb-3 no-print" id="acProgressText"></div>
     <div id="acTables"></div>
     <div class="ac-legend mt-3">
-      <span><i style="background:#1e293b"></i>วันเรียน (ตัวเลข = วันเรียนสะสม)</span>
-      <span><i style="background:rgba(34,197,94,.45)"></i>วันเสาร์</span>
-      <span><i style="background:rgba(251,191,36,.5)"></i>วันอาทิตย์</span>
-      <span><i style="background:#b91c1c"></i>วันหยุดราชการ/หยุดพิเศษ</span>
-      <span><i style="background:rgba(251,191,36,.18)"></i>ปิดภาคเรียน</span>
-      <span class="no-print"><i style="background:#1e293b; box-shadow:inset 0 -3px 0 #60a5fa"></i>มีกิจกรรมในปฏิทินวิชาการ</span>
+      <span><i style="background:#fff"></i>วันเรียน (ตัวเลข = วันเรียนสะสม)</span>
+      <span><i style="background:linear-gradient(135deg,#bbf7d0,#4ade80)"></i>วันเสาร์</span>
+      <span><i style="background:linear-gradient(135deg,#fef08a,#fbbf24)"></i>วันอาทิตย์</span>
+      <span><i style="background:linear-gradient(135deg,#fb7185,#e11d48)"></i>วันหยุดราชการ/หยุดพิเศษ</span>
+      <span><i style="background:#ede9fe"></i>ปิดภาคเรียน</span>
+      <span class="no-print"><i style="background:#faf5ff; box-shadow:inset 0 -3px 0 #8b5cf6"></i>มีกิจกรรมในปฏิทินวิชาการ</span>
     </div>
     <div class="small text-warning mt-2" style="opacity:.85;">** หมายเหตุ วันและเวลาเรียนสามารถปรับเปลี่ยนได้ตามสถานการณ์จริง</div>
     <div class="d-flex gap-2 mt-3 no-print">
-      <button class="btn btn-sm rounded-pill flex-fill" style="background:#334155; color:#60a5fa;" onclick="loadAcademic()">🔄 อัปเดต</button>
-      <button class="btn btn-sm rounded-pill flex-fill" style="background:#334155; color:#34d399;" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+      <button class="btn btn-sm rounded-pill flex-fill ac-btn a" onclick="loadAcademic()">🔄 อัปเดต</button>
+      <button class="btn btn-sm rounded-pill flex-fill ac-btn b" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
     </div>
   </div>
   <div class="card p-3 mb-4">
@@ -509,7 +553,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       }
       h += `<tr><td class="ac-month">เดือน${acThMonths[m]} ${String((y + 543) % 100).padStart(2,'0')}</td>${cells}<td class="ac-total">${rowTotal}</td></tr>`;
     });
-    h += `<tr class="ac-sum-row"><td colspan="32" style="text-align:center">รวมจำนวนวันเรียนภาคเรียนที่ ${sem.no}</td><td class="ac-total" style="background:#a855f7;color:#fff">${sem.total}</td></tr>`;
+    h += `<tr class="ac-sum-row"><td colspan="32" style="text-align:center">รวมจำนวนวันเรียนภาคเรียนที่ ${sem.no}</td><td class="ac-total" style="background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff">${sem.total}</td></tr>`;
     h += `</tbody></table></div>`;
     return h;
   }
@@ -541,9 +585,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     const left = target - done;
     const pct = target ? Math.round(done * 100 / target) : 0;
     document.getElementById('acStats').innerHTML =
-      `<div class="ac-stat"><div class="v">${done}</div><div class="l">วันเรียนที่ผ่านมา</div></div>` +
-      `<div class="ac-stat"><div class="v">${left}</div><div class="l">วันเรียนที่เหลือ</div></div>` +
-      `<div class="ac-stat"><div class="v">${target}</div><div class="l">วันเรียนทั้งหมด</div></div>`;
+      `<div class="ac-stat s1"><div class="v">${done}</div><div class="l">วันเรียนที่ผ่านมา</div></div>` +
+      `<div class="ac-stat s2"><div class="v">${left}</div><div class="l">วันเรียนที่เหลือ</div></div>` +
+      `<div class="ac-stat s3"><div class="v">${target}</div><div class="l">วันเรียนทั้งหมด</div></div>`;
     document.getElementById('acProgressBar').style.width = pct + '%';
 
     // วันนี้เป็นวันเรียนวันที่เท่าไร
@@ -576,12 +620,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (info.type === 'school') body += `<div style="font-size:1.1rem">📘 วันเรียนที่ <b>${info.no}</b> / ${sem.total} ของภาคเรียนที่ ${semNo}</div>`;
     else if (info.type === 'hol') body += `<div style="font-size:1.1rem">🔴 ${acEsc(info.name)}</div>`;
     if (info.events.length) {
-      body += '<hr style="border-color:#334155"><div class="text-start">' + info.events.map(e =>
+      body += '<hr style="border-color:#ddd6fe"><div class="text-start">' + info.events.map(e =>
         `<div class="mb-1"><span style="color:${acEsc(e.color || '#60a5fa')}">●</span> ${acEsc(e.event_name)}</div>`).join('') + '</div>';
     }
     Swal.fire({
       title: `วัน${acThDays[d.getDay()]}ที่ ${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`,
-      html: body, background: '#1e293b', color: '#f8fafc', confirmButtonText: 'ปิด'
+      html: body, background: '#fffdf8', color: '#1e1b4b', confirmButtonColor: '#7c3aed', confirmButtonText: 'ปิด'
     });
   }
 
